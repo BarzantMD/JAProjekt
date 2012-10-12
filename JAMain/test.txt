@@ -1,0 +1,532 @@
+WINDOWSLINUXMACOS
+ 
+ 
+ 
+Facebook ju¿ testuje natywn¹ aplikacjê dla Androida      Ruszy³ odœwie¿ony eBay.com      Jutro zostanie pokazany Samsung Galaxy SIII Mini      Windows Server Essentials 2012 stabilne 1 listopada      Zyski HTC spad³y o 79%      Azure beta dla Windows Server 2012      Microsoft „przez pomy³kê” prosi³ Google o zablokowanie Wikipedii i BBC      Autmapa dla Androida dosta³a nowe mapy      Facebook ju¿ testuje natywn¹ aplikacjê dla Androida      Ruszy³ odœwie¿ony eBay.com      Jutro zostanie pokazany Samsung Galaxy SIII Mini      Windows Server Essentials 2012 stabilne 1 listopada      Zyski HTC spad³y o 79%      Azure beta dla Windows Server 2012      Microsoft „przez pomy³kê” prosi³ Google o zablokowanie Wikipedii i BBC      Autmapa dla Androida dosta³a nowe mapy      
+
+
+wygl¹d ¡
+AktualnoœciBlogProgramySystemyLabArtyku³yWideoPo godzinachForum
+
+Wielki LoL - League of Legends najpopularniejsz¹ sieciow¹ gr¹
+12.10.2012 16:03, Autor: Tomasz Wrzesieñ (TomisH), Kategoria: News
+Je¿eli wierzyæ informacjom podawanym przez Riot Games, ich uwielbiana przez masy graczy produkcja League of Legends jest najpopularniejszym tytu³em sieciowym, jeœli nawet nie najpopularniejszym w ogóle. W systemie zarejestrowanych jest ju¿ przesz³o 70 milionów osób, z czego ka¿dego dnia loguje siê ponad 12 milionów. Miesiêcznie gra ma 32 miliony aktywnych u¿ytkowników (chodzi o przynajmniej jedno logowanie na 30 dni).
+
+
+To o 20 milionów wiêcej, ni¿ w szczytowej formie notowa³o World of Warcraft firmy Blizzard. W sumie online bawiæ siê potrafi¹ nawet 3 miliony graczy jednoczeœnie. Kto spêdza przy LoL-u najwiêcej czasu? 90 procent to mê¿czyŸni, 85 procent to osoby miêdzy 16 a 30 rokiem ¿ycia, w 60 procent przypadków z konkretnym wykszta³ceniem. Pañstwa, w których tytu³ uzyska³ najwiêksze grono mi³oœników (wed³ug „polubieñ” na Facebooku) to Polska, a tak¿e Niemcy, Francja, Hiszpania, Grecja, Kanada, Stany Zjednoczone, Brazylia, Filipiny i Korea Po³udniowa. W tym ostatnim kraju League of Legends ponoæ zrównuje siê powoli w popularnoœci ze StarCraftem — tamtejszym „sportem” narodowym.
+
+ komentarze (18)  podobne
+r   e   k   l   a   m   a
+
+Mobilny multikomunikator IM+ obs³u¿y tak¿e GG
+12.10.2012 15:28, Autor: Anna Rymsza (Xyrcon), Kategoria: News
+Nie tak dawno temu pisa³am, ¿e jeœli ktoœ nie mo¿e siê obejœæ bez GG na smartfonie z Androidem, to raczej nie zainteresuje siê aplikacj¹ IM+. Otó¿ dziœ wsparcie dla tej sieci pojawi³o siê na liœcie obs³ugiwanych przez multikomunikator, wiêc Polakowi, który lubi mieæ wszystkich znajomych w jednej aplikacji, nie powinno ju¿ niczego brakowaæ. Nowoœci¹ jest tak¿e mo¿liwoœæ po³¹czenia siê z MeinVZ — niemieck¹ platform¹ spo³ecznoœciow¹ dla studentów. Znajdziemy tu oczywiœcie tak¿e najpopularniejsze sieci, jak Facebook, Skype (w wersji p³atnej), MSN/Live Messenger, Google Talk, Yahoo!, AIM/iChat, ICQ czy Jabber/XMPP. Problemy z polskimi znakami jeszcze mog¹ siê zdarzyæ (w informacjach o kontaktach na przyk³ad), ale rozmawiaæ da siê bez problemu.
+
+
+Nowe protoko³y to nie jedyne nowoœci w tej wersji IM+ dla Androida. Na pierwszy rzut oka widaæ odœwie¿ony interfejs, zgodny z wytycznymi dla Androida 4.0. Ponadto mo¿na ustawiæ godziny, miêdzy którymi IM+ nie bêdzie nam przeszkadza³ powiadomieniami (na przyk³ad na noc) i mo¿na w³¹czyæ powiadomienia o tym, ¿e kontakt siê po³¹czy³ (w widoku edycji kontaktu). Historiê rozmów mo¿na teraz ³atwo zapisaæ na karcie SD.
+
+Multikomunikator dostêpny jest na Androida, iOS, BlackBerry i Windows Phone. Mo¿na tak¿e skorzystaæ z wersji webowej, ale tam jeszcze nie dzia³a GG… zreszt¹ GG ma w³asnego webowego klienta.
+
+ komentarze (9)  podobne
+
+Xbox Music te¿ bêdzie w Polsce
+12.10.2012 13:44, Autor: Anna Rymsza (Xyrcon), Kategoria: Felieton
+Œwietna wiadomoœæ na pi¹tek — wygl¹da na to, ¿e Xbox Music, spadkobierca Zune Pass, bêdzie dostêpny w Polsce. Zainspirowana wejœciem Spotify do Polski postanowi³am poszukaæ czegoœ o Xbox Music i uda³am siê oczywiœcie na Zune.net. Po zalogowaniu na Xbox Live przywita³a mnie aktualizacja warunków korzystania, w których znalaz³am zapis: Niniejsza Umowa obejmuje korzystanie przez Licencjobiorcê z Us³ug Xbox, w tym Xbox LIVE, Zune, Games for Windows-LIVE, Xbox Music oraz us³ug Windows Phone Store/Marketplace [...]. Hurra!
+
+
+Na Zune.net pojawi³ siê przycisk pozwalaj¹cy na wypróbowanie Zune Pass, pod którym kryje siê mo¿liwoœæ testowania Xbox Music przez 30 dni. Domyœlnie w³¹czone jest automatyczne odnawianie subskrypcji, która ma kosztowaæ 24,99 z³ miesiêcznie lub 249,90 z³ rocznie. Taniej ni¿ Deezer, zobaczymy czy wygodniej.
+
+
+No i to by by³o na tyle zabawy, gdy¿ us³uga jeszcze nie ruszy³a i nie ma tu nic do ogl¹dania ;). Nawet strona pomocy technicznej w domenie Xbox.com, do której odnoœnik dosta³am mailem, jeszcze nie dzia³a. Pozostaje tylko czekaæ na pe³en start us³ugi. Wed³ug plotek Xbox Music ma umo¿liwiaæ s³uchanie utworów z dostêpnej biblioteki lub przechowywanie w chmurze (na SkyDrive, ma równie¿ dzia³aæ system dopasowuj¹cy nasze utwory do tych dostêpnych w kolekcji, podobny do iTunes Match i pewnie z podobn¹ cenzur¹) i odtwarzanie w³asnych na wszystkich urz¹dzeniach z ekosystemu Microsoftu, a tak¿e sklep z utworami. Mo¿liwe, ¿e Microsoft nie wyda aplikacji dla Androida i w³aœnie z tego powodu z Xbox Music korzystaæ nie bêdê, ale wiêkszy wybór na rynku zawsze cieszy.
+
+ komentarze (10)  podobne
+
+Spotify wejdzie do Polski, to ju¿ pewne
+12.10.2012 13:06, Autor: Anna Rymsza (Xyrcon), Kategoria: Felieton
+Cyfrowe wykluczenie Polski na polu multimediów zmniejsza siê z ka¿dym rokiem. Jeszcze 3 lata temu kupno kilku piosenek w postaci cyfrowej graniczy³o z cudem, a teraz… odwa¿ê siê powiedzieæ, ¿e mamy nawet z czego wybieraæ — od sklepów z iTunes i Muzo na czele, na us³ugach „radiowych” typu Deezer koñcz¹c. I wszystko wskazuje na to, ¿e równie¿ bardzo lubiany za granic¹ Spotify wkrótce opanuje kraj nad Wis³¹.
+
+Zaczê³o siê od tego, ¿e na LinkedIn Spotify zacz¹³ szukaæ w Polsce mened¿era do spraw rozwoju i mened¿era sprzeda¿y. Ju¿ wtedy by³o wiadomo, co siê œwiêci — Szwedzi szykuj¹ siê do otwarcia biura w Polsce. Na 25 paŸdziernika zaplanowane zosta³o spotkanie Spotify Tech Talk, które odbêdzie siê w Krakowie — wtedy zapewne goœcie dowiedz¹ siê wiêcej o planach rozwoju w naszym regionie i w naszym kraju… i o aplikacji dla iPada. W ka¿dym razie wszystko wskazuje na to, ¿e Spotify u nas bêdzie i niebawem dowiemy siê kiedy otwarcie, a w miêdzyczasie mo¿na obejrzeæ krótki film o historii serwisu:
+
+
+Co to w³aœciwie jest Spotify? Us³uga powsta³a w 2008 roku w Szwecji. Za poœrednictwem dedykowanej aplikacji (OS X, Windows, iOS, Android, Windows Phone, BlackBerry, Facebook, w przygotowaniu tak¿e dla Linuksa) mo¿emy dostaæ siê do imponuj¹cej kolekcji utworów, tworzyæ listy odtwarzania, zbudowaæ sobie w³asn¹ bibliotekê, s³uchaæ bez dostêpu do sieci, kupiæ pliki MP3 (mo¿na je pobraæ 3-5 razy, zale¿nie od wydawcy) ze sklepu 7digital, wys³aæ komuœ muzykê w prezencie, s³uchaæ piosenek wybranych pod wzglêdem podobieñstwa stylu wykonawców lub dowiedzieæ siê czego jeszcze s³uchaj¹ osoby o podobnym guœcie. Dostêp do us³ugi zapewniaj¹ równie¿ na przyk³ad telewizory Smart TV Samsunga, urz¹dzenia firm Marantz, Denon, Philips, a nawet WD TV Live. Na koniec Spotify umo¿liwia udostêpnianie utworów „do pos³uchania” na w³asnym blogu, a nawet zrobienie dla strony œcie¿ki dŸwiêkowej… za darmo.
+
+Na Spotify mo¿na s³uchaæ muzyki za darmo, jeœli zgodzimy siê na reklamy. S³uchanie bez reklam jest mo¿liwe w p³atnym abonamencie Unlimited, zaœ Premium zapewnia dodatkowe funkcje — s³uchanie offline i dodatkowe mo¿liwoœci na urz¹dzeniu mobilnym. Zapowiada siê wiêc œwietnie, pozostaje poczekaæ. Niestety Spotify to jedna z tych firm, które nadal maj¹ problemy z okreœleniem swojego planu biznesowego i, mimo ogromnej popularnoœci, w zesz³ym roku zanotowa³a stratê wysokoœci 59 milionów dolarów.
+
+ komentarze (6)  podobne
+
+Google Play pozwoli skasowaæ pozycje z historii instalacji, bêdzie mia³ antywirusa?
+12.10.2012 12:09, Autor: Anna Rymsza (Xyrcon), Kategoria: News
+Aplikacja mobilna do obs³ugi sklepu Google Play zosta³a dziœ zaktualizowana do wersji 3.9.16 (lada chwila powinna dotrzeæ na urz¹dzenia), co nie jest szczególnie wa¿nym wydarzeniem w historii aplikacji, ale zmiany wprowadzone tym razem s¹ godne uwagi. Nowoœci zwi¹zane s¹ g³ównie z list¹ moich aplikacji (My Apps), która szczególnie w przypadku osoby eksperymentuj¹cej z dostêpnym oprogramowaniem szybko robi siê d³uga i trudna do zarz¹dzania.
+
+Google w koñcu da³ mo¿liwoœæ „posprz¹tania” na tej liœcie — koniec z zastanawianiem siê co to by³o, czy nam siê podoba³o i czy jeszcze kiedyœ z tego skorzystamy. Jest mo¿liwoœæ zaznaczenia wielu pozycji na raz, jeœli tylko bêdziemy przytrzymywaæ na nich palec nieco d³u¿ej. U³atwiona zosta³a tak¿e nawigacja — przy przechodzeniu miêdzy listami aplikacja powinna zapamiêtaæ pozycjê i umo¿liwiæ powrót do ostatnio ogl¹danej czêœci widoku (podobno nie zawsze dzia³a).
+
+
+Ponadto wprowadzono ma³¹ zmianê kosmetyczn¹, a mianowicie nowe ikonki powiadomieñ — po pobraniu appki na pasku powiadomieñ znajdzie siê ikonka danej aplikacji, a nie zwyk³y sygnalizator zakoñczenia pobierania. Na Androidzie 4.1 (Jelly Bean) w rozwijanych powiadomieniach dowiemy siê tak¿e wiêcej o dostêpnych aktualizacjach. Wiêcej zrzutów ekranu z nowej aplikacji mo¿na znaleŸæ na Android Police.
+
+Ten sam serwis informuje, ¿e po „rozebraniu” pakietu z aplikacj¹ znaleziono komponenty sugeruj¹ce, ¿e Google Play dla Androida bêdzie wyposa¿ony w prosty skaner antywirusowy. Modu³ App Check bêdzie mia³ mo¿liwoœæ sprawdzenia wszystkich aplikacji ju¿ na urz¹dzeniu zainstalowanych (tak¿e z zewnêtrznych Ÿróde³) oraz typow¹ ochronê w czasie rzeczywistym, która wyœwietli powiadomienie o niebezpieczeñstwie. Wszystko wskazuje na to, ¿e bêdzie mo¿liwe pobranie appki mimo sprzeciwu stró¿a wbudowanego w Google Play.
+
+ komentarze (18)  podobne
+
+GParted 0.14 obs³uguje woluminy zarz¹dzane przez LVM
+12.10.2012 12:00, Autor: Kuba Pawlak (qbap), Kategoria: News
+W³aœnie pojawi³a siê kolejna wersja œwietnego opensource'owego narzêdzia przeznaczonego do zarz¹dzania partycjami z poziomu LiveCD (czy te¿, bardziej wspó³czeœnie, LiveUSB). Mowa oczywiœcie o GParted, który doczeka³ siê aktualizacji do wersji 0.14.
+
+GParted potrafi rozpoznawaæ wiele systemów plików, w tym te najpopularniejsze: FAT16, FAT32, NTFS, EXT2, EXT3 oraz przeprowadzaæ na nich szereg operacji takich jak tworzenie partycji, odczytywanie, kopiowanie, usuwanie, przesuwanie czy zmiana rozmiaru. Aplikacja dostêpna jest z poziomu systemu uruchamianego z p³yty CD/DVD czy te¿ dysku zewnêtrznego (pendrive, przenoœny dysk USB), dlatego te¿ przed przyst¹pieniem do pracy nale¿y nagraæ obraz ISO na wybranym noœniku, a nastêpnie upewniæ siê, ¿e komputer uruchamiany jest z tej wpaœnie p³yty czy pendrive'a.
+
+
+G³ówn¹ nowoœci¹, jaka pojawi³a siê w najnowszym wydaniu GParted, jest mo¿liwoœæ przesuwania, tworzenia, usuwania, sprawdzania i zmieniania rozmiaru woluminów zarz¹dzanych przez LVM (Logical Volume Manager). Poza tym naprawiono kilka b³êdów oraz dodano nowe i zaktualizowano kilka dostêpnych ju¿ t³umaczeñ.
+
+Najnowsz¹ wersjê obrazu GParted 0.14.0-1 do nagrania na p³ycie lub dysku mo¿na pobraæ z naszego serwisu w dziale Programy › Narzêdzia › Narzêdzia dyskowe i plikowe.
+
+ komentarze (13)  podobne
+
+Gotowanie ze œwiniami, czyli Bad Piggies na iPadzie w kuchni
+12.10.2012 11:15, Autor: Tomasz Wrzesieñ (TomisH), Kategoria: News
+Bad Piggies staje siê powoli gr¹ Rovio równie popularn¹, co seria Angry Birds, wiêc twórcy próbuj¹ oczywiœcie na niej zarobiæ na kolejne sposoby. O ile ptaszyska to ju¿ ca³y przemys³ — gry, zabawki czy filmy animowane — tak prosiaki nieœmia³o próbuj¹ na pocz¹tek do portfela dobraæ siê przez ¿o³¹dek. Na iPada dostêpna jest do kupienia interaktywna ksi¹¿ka kucharska o wszystko mówi¹cym tytule Bad Piggies: Best Egg Recipes.
+
+
+Wiadomo, na co po³asi³y siê œwinki, wszczynaj¹c w rezultacie miêdzygatunkow¹ wojnê — na jajka. W humorystyczny sposób przeprowadz¹ nas teraz przez 41 ró¿norakich sposobów ich przyrz¹dzenia. Co ciekawe, Rovio tak naprawdê próbuje pod skrócon¹ nazw¹ (wylecia³o Angry Birds z przodu) sprzedaæ w cyfrowej formie ksi¹¿kê, która na rynku jest ju¿ od zesz³ego roku. Czyli typowe jak zrobiæ, aby zarobiæ, ale siê nie narobiæ...
+
+ komentarze (6)  podobne
+
+Street View zaktualizowane — Google sfotografowa³ na nowo 250 tys. mil dróg
+12.10.2012 10:19, Autor: Wojciech Cybulski (Nicolass), Kategoria: News
+Google — jak sam chwali siê na blogu — przeprowadzi³ w³aœnie najwiêksz¹ w historii aktualizacjê Street View. W us³udze podwojona zosta³a liczba specjalnych stref, które mo¿na ogl¹daæ w ramach us³ugi i zaktualizowano zdjêcia dróg o ³¹cznej d³ugoœci 250 tysiêcy mil (ponad 400 tysiêcy kilometrów).
+
+
+Google zwiêkszy³ zasiêg oraz zaktualizowa³ bazê Street View w takich krajach jak Makao, Singapur, Szwecja, USA, Tajlandia, Tajwan, W³ochy, Wielka Brytania, Dania, Norwegia oraz Kanada. Nowo uruchomione zbiory specjalne dotycz¹ zaœ obszaru Afryki Po³udniowej, Japonii, Hiszpanii, Francji, Brazylii, Rosji i Meksyku. Z bli¿szych nam ciekawostek mo¿na wymieniæ choæby Pa³ac carycy Katarzyny II w Petersburgu (w ramce powy¿ej), klasztor Terapontowski niedaleko miasta Kiri³³ow czy duñski zamek Kronborg.
+
+Realizowana przez Google us³uga Street View jest bezkompromisowym projektem pozwalaj¹cym odbywaæ wirtualne podró¿e i kompleksowo planowaæ prawdziwe woja¿e. Dziêki mo¿liwoœci przeœledzenia tras po przyjeŸdzie na miejsce czujemy siê tak, jakbyœmy ju¿ tu byli. Jeszcze kilkanaœcie lat temu by³o to nie do pomyœlenia.
+
+ komentarze (10)  podobne
+
+Google Drive koñczy ze wsparciem dla starszych dokumentów Microsoft Office
+12.10.2012 8:35, Autor: Wojciech Cybulski (Nicolass), Kategoria: Felieton
+Google og³osi³, ¿e 31 stycznia webowy pakiet biurowy Drive (do niedawna Docs) przestanie wspieraæ dokumenty w domyœlnych formatach Microsoft Office 97 - 2003. Oznacza to, ¿e ju¿ na pocz¹tku przysz³ego roku u¿ytkownicy Google Docs strac¹ mo¿liwoœæ zapisywania dokumentów w popularnych formatach DOC, XLS i PPT. Bior¹c pod uwagê, ¿e ze starszych edycji pakietu Microsoft Office wci¹æ korzysta ogromna rzesza ludzi (biura, uczelnie, urzêdy), ktoœ w Mountain View ewidentnie upad³ na g³owê…
+
+Google uzasadnia swoj¹ decyzjê potrzeb¹ wspierania nowoczesnych formatów plików, które s¹ stosowane miêdzy innymi w pakiecie Microsoft Office 2007 (i nowszych). Utrudnia to jednak ¿ycie osobom korzystaj¹cym ze starszych wersji pakietu biurowego Microsoftu.
+
+
+Oczywiœcie problem nie jest nie do przeskoczenia. Je¿eli osoba, której chcemy wys³aæ dokument w nowszym formacie (np. docx) korzysta przyk³adowo z aplikacji Word 2003, Word 2002 lub Word 2000, mo¿emy j¹ nak³oniæ do instalacji specjalnego pakietu zgodnoœci oraz dodatkowych, niezbêdnych aktualizacji. Jest to jednak doœæ absurdalne, gdy¿ osoby które potrafi¹ robiæ takie rzeczy, nie powinny mieæ problemów z przesiadk¹ na Office 2010… no chyba ¿e nie ma takiej mo¿liwoœci, bo na przyk³ad firma aktualizacji nie kupi. Ewentualnie mo¿na posi³kowaæ siê formatem RTF — jego obs³uga przez pakiet Microsoft Office od wersji 97 do 2003 nie jest jednak idealna — lub skorzystaæ z jednego z pakietów alternatywnych… Przyk³adowo OpenOffice 3.x otworzy nawet pliki zapisane przez Worda 6.0 i Excela 4.x (to mo¿e ju¿ lekka przesada), z zapisem do starszych formatów te¿ wiêkszych problemów nie ma, LibreOffice zaœ poradzi sobie z plikami z Office 95 i nowszych.
+
+Warto zauwa¿yæ, ¿e omawiane zmiany mia³y wejœæ w ¿ycie ju¿ 1 paŸdziernika tego roku, ale u¿ytkownicy zaprotestowali. Google chce daæ swoim klientom czas na wgranie stosownych aktualizacji b¹dŸ migracjê ku nowszej wersji oprogramowania. Dobre i to. Proœciej by³oby jednak pozostawiæ u¿ytkownikom opcjonaln¹ mo¿liwoœæ zapisywania plików w formatach DOC, XLS i PTT — standard ten i tak umar³by w koñcu œmierci¹ naturaln¹. Z ciekawoœci sprawdzi³em jeszcze, jak sprawa zapisywania plików wygl¹da w webowym pakiecie biurowym Microsoftu — uruchomiony w przegl¹darce Word Web App zaoferowa³ wyeksportowanie mojego dokumentu jedynie do formatu DOCX lub ODT, czyli jeszcze gorzej ni¿ w przypadku Google Docs. Plik ze starszego Worda owszem, otworzy, ale przekonwertuje go sobie do OpenXML (DOCX).
+
+ komentarze (31)  podobne
+
+Jak uruchomiæ Linuksa na nowych „bezpiecznych” komputerach z Windows 8? Bez Microsoftu siê nie obejdzie
+11.10.2012 20:47, Autor: Adam Golañski (eimi), Kategoria: News
+Jak g³osi miejska legenda, Bill Gates mia³ powiedzieæ w latach 90, ¿e na œwiecie jest miejsce dla tylko jednego systemu operacyjnego. I w pewnym momencie wydawaæ siê mog³o, ¿e mia³ racjê – by³y czasy, gdy realnie istnia³ tylko Windows. Systemy Amigi i Atari ST zosta³y pogrzebane wraz z tymi maszynami, Macintosh istnia³ tylko symbolicznie i to tylko na kilku rynkach œwiata, uniksowe stacje robocze przesta³y siê sprzedawaæ, a Linux... no có¿, Linux stawia³ pierwsze kroki, nieprzyjazny dla u¿ytkowników, niewystarczaj¹cy dla biznesu. Windows by³o wszystkim, Windows by³o ca³ym œwiatem komputerów osobistych.
+
+Choæ dzisiaj daleko nam do tego stanu rzeczy, triada Windows/Linux/OS X jest rozpoznawana jako kluczowe OS-y, dla których pisze siê oprogramowanie (vide górne menu dobrychprogramów), ko³o telewizorów czêsto stoi jakieœ Playstation, ludzie bawi¹ siê tabletami i smartfonami, na których Windows praktycznie nie istnieje, to wci¹¿ to Windows jest królem.
+
+Powodów dominacji Windows na rynku desktopów jest wiele. Niektóre s¹ techniczne, inne to efekt dzia³añ czysto marketingowych. Koronn¹ rolê odgrywa w nich preinstalowanie tego systemu na wiêkszoœci sprzedawanych komputerów PC. Przyk³adowo w 2011 roku, na ka¿de 100 sprzedanych pecetów, Microsoft sprzeda³ 68 licencji Windows 7. Pozosta³e 30 pewnie dosta³o pirackie Windows, a pozosta³e... no có¿, pozosta³e doczeka³y siê Ubuntu lub którejœ z innych dystrybucji Linuksa. Czy w tej sytuacji Redmond ma siê czego obawiaæ?
+
+Windows 8 ma przynieœæ ze sob¹ wiele zmian, a jedn¹ z najwa¿niejszych jest rozstanie siê z BIOS-em. Wszystkie nowe komputery z preinstalowan¹ „ósemk¹” bêd¹ musia³y u¿ywaæ interfejsu UEFI (United Extensible Firmware Interface), dziœ stosowanego g³ównie w maszynach serwerowych i Makach. Maszyny z Windows 8 maj¹ obs³ugiwaæ bezpieczny start systemu, co oznacza, ¿e bootloader wczytany zaraz po uruchomieniu komputera musi byæ podpisany kluczem zaufanego urzêdu certyfikuj¹cego. Wszystko oczywiœcie w imiê walki ze szkodliwym oprogramowaniem – w tak zabezpieczonym bootloaderze nie bêdzie mo¿na przemyciæ ¿adnych rootkitów.
+
+
+Wszystko piêknie – ale te¿ tak zabezpieczona maszyna bêdzie mog³a uruchamiaæ tylko Windows 8, ¿aden inny system operacyjny nie bêdzie móg³ byæ na niej uruchomiony. Zamierzony efekt uboczny? Firmware'u nie da siê podmieniæ na niepodpisany, gdy¿ jak Redmond poinformowa³o w wytycznych dla producentów sprzêtu, Windows ma byæ podpisane kluczem Microsoftu, a publiczna czêœæ tego klucza znajdzie siê w firmware komputerów PC, albo te¿ OEM-y bêd¹ podpisywa³y swoimi kluczami preinstalowane wersje Windows, których z takich maszyn ju¿ siê nie bêdzie mog³o usun¹æ i zast¹piæ czymœ innym. Ostatecznie okaza³o siê, ¿e w ca³oœci te restrykcje obejm¹ tylko komputery z procesorami ARM, w maszynach z procesorami x86 taki bezpieczny tryb uruchamiania mo¿na bêdzie wy³¹czyæ – choæ ju¿ wtedy Windows 8 na nich siê nie uruchomi.
+
+O zagro¿eniu tym, odkrytym przed Matthew Garreta z Red Hata, wiadomo ju¿ od ponad roku. Przez ten czas wydawcy linuksowych dystrybucji – co by nie mówiæ jedynej dziœ alternatywy dla Windows na PC (OSX 86 to raczej hobby wci¹¿), szukali wyjœcia z tej, co by nie mówiæ, kryzysowej sytuacji. Problem nie by³ ³atwy do rozwi¹zania. Kto mia³by podpisywaæ j¹dra Linuksa i jak? Licencja aktualnie najczêœciej stosowanego bootloadera GRUB2 wymaga publikowania kluczy stosowanych do podpisu, a i starsza wersja GRUB-a nie jest tu wcale ³atwa do wykorzystania.
+
+Na horyzoncie widaæ ju¿ jednak zarysy rozwi¹zania. The Linux Foundation przedstawi³a w³aœnie swoje plany, które powinny umo¿liwiæ instalowanie Linuksa na nowych komputerach. Z grubsza wygl¹da to tak: Fundacja kupi od Microsoftu klucz i podpisze za jego pomoc¹ ma³y wstêpny bootloader, który bêdzie kolejno ³adowa³, bez jakiegokolwiek ju¿ sprawdzania sygnatury, dany bootloader (np. GRUB2), który nastêpnie za³aduje Linuksa. Taki wstêpny bootloader bêdzie móg³ byæ wykorzystany zarówno do uruchamiania instalatorów z noœnika optycznego czy pendrive'a, jak i dystrybucji typu LiveCD. Zaraz po nabyciu klucza Microsoftu, The Linux Foundation opublikuje podpisany nim wstêpny bootloader na swoich stronach.
+
+Kod tego preloadera jest ju¿ dostêpny, zainteresowani mog¹ sklonowaæ sobie repozytorium gita: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/efitools.git (Loader.c). Oczywiœcie po¿ytku z niego, do momentu gdy Fundacja Linuksa nie pozyska microsoftowego klucza, raczej nie bêdzie. Jak widaæ, jest to maleñstwo, które ca³¹ pracê przerzuca na normalny bootloader i samo z siebie nie zapewnia ¿adnych mechanizmów zabezpieczeñ wzglêdem uruchomienia Linuksa z wy³¹czon¹ opcj¹ bezpiecznego startu. Wiêcej o rozwi¹zaniu znaleŸæ mo¿na na blogu Jamesa Bottomleya.
+
+Nie jest to jedyne proponowane wyjœcie z sytuacji. Canonical chcia³ swego czasu zrezygnowaæ z GRUB-a i siêgn¹æ po bootloader Intela, który móg³by samodzielnie podpisaæ kluczem Microsoftu (i oczywiœcie klucza tego nie udostêpniaæ ju¿ dalej). Idealiœci od Fedory mówili o koniecznoœci stworzenia klucza dla Linuksa, który pos³u¿y³by do podpisywania bootloaderów we wszystkich dystrybucjach, bo przecie¿ to trochê potworne, by pingwina Microsoft podpisywa³ (ale jak nak³oniæ OEM-ów, by zawarli ten klucz w firmware?). Swojego rozwi¹zania szuka spo³ecznoœæ Debiana. Jak jednak te rozwi¹zania wypal¹ w praktyce – tego chyba obecnie nikt nie wie.
+
+Czy UEFI oka¿e siê krzes³em, za pomoc¹ którego Steve Ballmer dobije Linuksa?
+
+ komentarze (174)  podobne
+12345... 1861
+
+<>Czas na ostatnie zadanie...
+304 komentarze
+
+Jak uruchomiæ Linuksa na...
+173 komentarzeKonkurs z diod¹...
+86 komentarzy
+
+Firefox 16 lepiej radzi...
+85 komentarzyNiebezpieczna luka w...
+62 komentarze
+
+Czy s³oneczko GG ju¿...
+57 komentarzyMicrosoft aktualizuje...
+55 komentarzy
+
+Nexus 7 — Google...
+55 komentarzy
+
+Pinnacle Studio HD Ultimate 16.0.0.75
+
+Ocena: 8,5
+
+<>Samsung Galaxy S III
+
+Czy to godny nastêpca tronu?
+Testujemy GALAXY NOTE
+
+Czy to tablet z telefonem?
+24 godziny
+z Windows 8
+
+Zobacz wideo
+HiFiMan HM-601 Slim
+
+Styl retro dla audiofila
+
+
+<>Dioda4ever -...
+
+Autor: DjLeoRecenzja...
+
+Autor: DjLeoNowy nbnotify z...
+
+Autor: webnullJak to by³o z t¹...
+
+Autor: MaXDemage
+
+<>22.10
+PLNOG 9 (Kraków)
+07.11
+Autodesk Certification Open Day
+Ostatnio na forum
+Po wgraniu sterownika karty graficznej monitor nie dzia³a.
+Restart Systemu Windows Xp
+Formatowanie dysku.
+Komputer do 2000
+Caption Hello world! podczas otwierania dysku
+Gry z Win 7 na Win XP
+problem z servis pack win 7
+Proœba o sprawdzenie logów i pomoc w usuniêciu b³êdów.
+Orange- Lan nie dzia³a "pobieranie adresu sieciowego"
+[Ruby][FTP] Wysy³anie pliku na FTP
+konfiguracja internetu
+Jakie podzespo³y do ulepszenia komputera?
+Przeróbka wejœcia od starego pada
+Rozbudowa komputera+wymiana zasilacza
+Brak basów przy zew. g³osnikach laptopa
+Czy w laptopie Dell mo¿na wymienic kartê grficzn¹?
+Darmowy program do defragmentacji dysku dzia³aj¹cy tle
+Ch³odzenie laptopa
+Karta graficzna Ÿle wyœwietla obraz.
+problem z grami przegl¹darkowymi i fb
+Jak pod³¹czyæ drugi dysk w laptopie ASUSa?
+Wirus ukash otl
+Szukam Programu takiego jak windows movie maker
+Bios do HD3650
+Po³¹czenie PC z TV LCD
+Newsletter
+    
+
+avast! Free Antivirus 7.0.1466 (21645941)
+Adobe Reader 9.5 (10083612)
+WinRAR 4.20 (8979081)
+ALLPlayer 5.3 (8663981)
+Winamp 5.63 Build 3235 Full (8024557)
+CCleaner 3.23.1823 (5756664)
+DAEMON Tools Lite 4.45.4.0316 (4696527)
+eMule 0.50a (4383567)
+Skype 5.10.0.116 (4172839)
+FFDShow 2012.08.25 (4155483)
+GIMP 2.8.2 (4032451)
+K-Lite Codec Pack 9.3.0 Full (4026756)
+Firefox 16.0.1 (3792048)
+IrfanView 4.33 (3767015)
+Alcohol 120% 2.0.2.3931 (3742647)
+Gadu-Gadu (GG) 7.7 (3457073)
+Adobe Reader 6.02 (3312200)
+Everest Home Edition 2.20 (3222684)
+AVG Anti-Virus Free Edition 2013 13.0 Build 2677a5774 (3210565)
+Ares 2.1.8.3042 (3162312)
+Skanery antywirusowe
+
+
+Akceleratory pobierania plików
+Akcesoria graficzne
+Aran¿acja wnêtrz i ogrodów
+Archiwizacja danych
+Archiwizacja danych (dla specjalistów IT)
+Arkusze kalkulacyjne
+Bazy danych
+Bezpieczeñstwo korporacyjne (dla specjalistów IT)
+Bezpoœrednia wymiana plików
+Biblioteki i inne dodatki
+Biologia i chemia
+Czytniki RSS
+Defragmentatory plików
+Dodatki do klientów poczty e-mail
+Dodatki do programów graficznych
+Edytory dla programistów
+Edytory tekstów
+Emulatory
+Ewidencja œrodków trwa³ych
+Fizyka i astronomia
+Fotomonta¿, kola¿, mozaika
+Genealogia
+Geografia
+Gie³da i waluty
+Gry edukacyjne
+Historia
+Identyfikacja sprzêtu i oprogramowania
+Inne akcesoria
+Inne jêzyki obce
+Inne narzêdzia
+Inne programy biurowe
+Inne programy dla domu
+Inne programy dla firm
+Inne programy dla programistów
+Inne programy dla urz¹dzeñ mobilnych
+Inne programy edukacyjne i naukowe
+Inne programy graficzne
+Inne programy internetowe
+Inne programy multimedialne
+Inne programy zabezpieczaj¹ce
+Jêzyk angielski
+Jêzyk polski
+Kalendarze
+Kalkulatory
+Katalogowanie i obróbka zdjêæ
+Katalogowanie zasobów multimedialnych
+Klienty FTP
+Klienty poczty e-mail
+Kompresory plików
+Komunikatory internetowe
+Kontrola rodzicielska
+Kontrola wersji
+Konwersja audio i wideo
+Konwertery i generatory PDF
+Ksi¹¿ki kucharskie
+Mapy i nawigacja GPS
+Matematyka i statystyka
+Mened¿ery plików
+Modelowanie 3D
+Nagrywanie p³yt CD/DVD/BD
+Nak³adki i dodatki do przegl¹darek
+Narzêdzia administracyjne (dla specjalistów IT)
+Narzêdzia administracyjne i internetowe
+Narzêdzia bazodanowe
+Narzêdzia diagnostyczne (dla specjalistów IT)
+Narzêdzia dla fotografów
+Narzêdzia dyskowe i plikowe
+Narzêdzia pomocnicze dla webmasterów
+Narzêdzia sieciowe
+Narzêdzia systemowe
+Nauczanie pocz¹tkowe
+Nauka jazdy
+Obróbka i konwersja audio
+Obróbka i konwersja wideo
+Obs³uga œrodków trwa³ych
+Ochrona prywatnoœci
+Odtwarzacze plików audio i wideo
+Odtwarzacze p³yt DVD i Blu-ray
+Odtwarzacze stacji radiowych i TV
+Odzyskiwanie danych
+Odzyskiwanie hase³
+Organizery finansowe
+Organizery osobiste
+Pakiety biurowe
+Pakiety do prowadzenia firmy
+Pakiety graficzne
+Pakiety multimedialne
+Pakiety narzêdziowe
+Pakiety oprogramowania
+Pakiety zabezpieczaj¹ce
+Pogoda
+Polskie lokalizacje
+Poprawki i aktualizacje zabezpieczeñ
+Programy antyspamowe
+Programy antyspyware
+Programy antywirusowe
+Programy archiwalne
+Programy bran¿owe
+Programy dla biur rachunkowych
+Programy dla DJów
+Programy dla dzieci
+Programy dla kolekcjonerów
+Programy dla pisarzy
+Programy dla rolników
+Programy dla szkó³ i nauczycieli
+Programy dla uczniów
+Programy do fakturowania
+Programy do malowania
+Programy do obs³ugi serwisu
+Programy do projektowania CAD
+Programy finansowo-ksiêgowe
+Programy handlowe i magazynowe
+Programy kadrowo-p³acowe
+Projektowanie oprogramowania
+Przechwytywanie obrazu
+Przechwytywanie wideo
+Przegl¹darki dokumentów
+Przegl¹darki graficzne
+Przegl¹darki i konwertery projektów
+Przegl¹darki stron WWW
+Rozliczenia podatkowe
+Rozpoznawanie tekstów OCR
+Rozszerzenia i pow³oki pulpitu
+Rozszerzenia multimedialne i kodeki
+Rozszerzenia programów
+Serwery baz danych
+Serwery poczty (dla specjalistów IT)
+Serwery WWW i FTP (dla specjalistów IT)
+Skanery i szczepionki antywirusowe
+Sk³ad publikacji DTP
+S³owniki i translatory
+Sterowanie komputerem
+Sterowniki
+Synchronizacja danych
+Szyfrowanie danych
+Œrodowiska programistyczne
+Telefonia VoIP
+Testowanie i diagnostyka
+Transmisja faksów
+Tworzenie gier
+Tworzenie grafiki prezentacyjnej
+Tworzenie i edycja animacji
+Tworzenie i edycja filmów
+Tworzenie i edycja grafiki rastrowej
+Tworzenie i edycja grafiki wektorowej
+Tworzenie i edycja muzyki
+Tworzenie ikon
+Tworzenie instalatorów
+Tworzenie motywów i dŸwiêków
+Tworzenie obrazów HDR
+Tworzenie panoram
+Tworzenie prezentacji i demonstracji
+Tworzenie stron i aplikacji internetowych
+Tworzenie wizytówek i etykiet
+Uaktualnienia
+Usuwanie zabezpieczeñ
+Wirtualizacja
+Wirtualizacja (dla specjalistów IT)
+Zapory sieciowe (firewalle)
+Zarz¹dzanie licencjami i infrastruktur¹ IT
+Zarz¹dzanie produkcj¹
+Zarz¹dzanie relacjami z klientami CRM
+Zdalny dostêp (dla specjalistów IT)
+Zdrowie i uroda
+Zegarki
+Zestawy programów
+
+Sublime Text 2.0.1
+Tribler 6.0.0
+Right Click Enhancer 3.1
+jAlbum 10.10.7
+DVD Slim Free 2.6.0.4
+K-Lite Codec Pack 9.3.6 Update
+Comodo Dragon Internet Browser 22.1.1.0
+DriverEasy 4.1.1.32690
+Stinger 10.2.0.816
+Auslogics Registry Cleaner 2.4.0.10
+Pamela for Skype 4.8.0.95 Basic
+Movavi Video Editor 8.0
+Vim 7.3.687
+IObit Smart Defrag 2.6.0.1162
+Webroot SecureAnywhere Antivirus 2012 8.0.2.27
+Samsung Kies 2.5.0.12094_28_8
+Skup Surowców Wtórnych 2.1.23.955
+LTspice IV 4.16p
+SynWrite 4.1.150
+TweetDeck 2.0.2
+Process Lasso 6.0.1.62
+Adobe After Effects CS6 11.0.2
+ZoneAlarm Free Antivirus + Firewall 10.2.081.0
+ZoneAlarm 10.2.081.000
+OTL 3.2.69
+
+
+
+Firefox 17 Beta 1
+Maxthon 3.5.2.600 Beta
+Shareaza 2.6.0.1 r9213
+Google Chrome 23.0.1271.26 Beta
+FlashFXP 4.2.6 Build 1865 Beta
+AnyDVD & AnyDVD HD 7.0.9.4 Beta
+cFosSpeed 8.03 Build 2000 Beta
+avast! Free Antivirus 7.0.1469 Beta
+avast! Internet Security 7.0.1469 Beta
+avast! Antivirus Pro 7.0.1469 Beta
+uTorrent 3.2.2 Build 28138 Beta
+Opera 12.10 Build 1620
+Process Lasso 6.0.1.59 Beta
+AIDA64 Extreme Edition 2.60.2146 Beta
+DVDFab HD Decrypter 9.0.0.2 Beta
+DVDFab Platinum 9.0.0.2 Beta
+Rainmeter 2.4 Revision 1674
+FreeMind 1.0.0 Beta 8
+BurnAware Free 5.3 Beta
+Mp3tag 2.52a
+Dropbox 1.5.36
+Malwarebytes Anti-Malware 1.65.1.1000 Beta
+Start8 0.98 Beta
+NetBeans 7.3 Beta
+FreeCommander FreeCommander XE
+
+
+Pozosta³e aktualnoœci
+Ile kosztuje Internet dla studenta?
+Nowa wersja dobrychprogramów Modern UI pozwala szukaæ aplikacji z menu Start
+Star Citizen — nowa gra twórcy serii Wing Commander
+Niebezpieczna luka w Firefoksie 16, Mozilla poleca powrót do 15.0.1
+Ballmer kreœli strategiê firmy — Microsoft pójdzie w œlady Apple
+Subskrypcje w Google Play teraz z mo¿liwoœci¹ „jazdy próbnej”
+Notepad++ 6.2 z UDL2 — nowe mo¿liwoœci kolorowania sk³adni
+FlasCC: kompilator C/C++ dla Flasha przyniesie renesans technologii Adobe?
+Wirtualne wystawy Google Cultural Institute
+OnLive wykupiono za nieca³e 5 milionów dolarów
+Gry za tyle, ile chcesz — pierwsza taka oferta ju¿ na GOG.com
+UPC Phone — telefon stacjonarny ju¿ mo¿na zabraæ ze sob¹
+Canonical u³atwia przekazywanie dotacji na rzecz Ubuntu
+Po pr¹d do Netii, po kredyt do Google'a?
+Microsoft odchodzi od MS Points, ale nie na Xboksie 360
+Tym razem Humble Bundle oferuje ksi¹¿ki
+Firefox 16 lepiej radzi sobie z pamiêci¹
+RSA Conference Europe 2012 rozpoczêta
+CAPTCHA, która korzysta z empatii i uczy o prawach cz³owieka
+Test Nexusa 7 — pierwszego tabletu Google'a
+Najczêœciej komentowane aktualnoœci
+Ju¿ jutro pierwsze zadanie specjalne w konkursie z diod¹! (429)
+Ju¿ jutro kolejne zadanie specjalne z diod¹! (337)
+W niedzielê zadanie specjalne, w poniedzia³ek zwyciêzca tygodnia (333)
+Czas na ostatnie zadanie w konkursie z diod¹! (304)
+Jak uruchomiæ Linuksa na nowych „bezpiecznych” komputerach z Windows 8? Bez Microsoftu siê nie obejdzie (173)
+Jest zwyciêzca tygodnia, a my dodajemy kolejne nagrody! (130)
+Dzisiejsze pytanie dopiero przed nami — kto bêdzie najszybszy? (128)
+Konkurs z diod¹ siê rozkrêca — w dalszym ci¹gu szansa na nagrody! (126)
+Dziœ polska premiera iPhone 5, ale raczej go nie kupisz (120)
+KE przygl¹da siê Microsoftowi, mo¿e z³o¿yæ kolejn¹ skargê (119)
+Najnowsze artyku³y
+Nexus 7 — Google zaatakowa³o rynek tabletów
+AMD A10-5800K – Trinity w wersji desktop
+APU Trinity – AMD wraca do gry
+Samsung Galaxy S III — czy bêdzie godnym nastêpc¹ tronu?
+Sony Xperia S — smartfon (prawie) idealny
+Najnowsze materia³y wideo
+Sami Mäkinen o podkrêcaniu (nie tylko) nowego AMD A10
+Czyny zabronione w cyberprzestrzeni - internauta@prawo.karne
+Upload i download: czy jestem z³odziejem? - internauta@prawo.karne
+Relacja z konferencji Symantec.Future 2012
+Relacja z premiery CorelDRAW X6
+Ostatnio na Gamikaze
+GoW: Ascension w trzech edycjach
+Darkstalkers Resurrection w produkcji
+Fabularne rozszerzenie Borderlands 2
+Rockstar Games Collection w listopadzie
+Viking wreszcie na PC
+Stuart Black ju¿ nie w City Interactive
+The Astronauts - nowe polskie studio
+Rusza cdp.pl, nowy cyfrowy sklep
+Chris Roberts ujawnia grê Star Citizen
+Znane postacie w strategii XCOM
+Splinter Cell dostanie komiks
+Fincher i Miller robi¹ zwiastun Halo 4
+Zwolnienia w Backbone Entertainment
+S¹ wci¹¿ szanse na film Gears of War?
+Green Arrow w Injustice
+WRC 3 w Polsce nieco póŸniej
+Delta Six - karabin jako kontroler
+Mechromancer tydzieñ wczeœniej
+Capcom o DLC na p³ycie z RE 6
+Serial na bazie Bad Company
+O PORTALUREGULAMINREKLAMANASZE BANERYKONTAKT

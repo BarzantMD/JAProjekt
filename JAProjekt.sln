@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JAMain", "JAMain\JAMain.vcxproj", "{E5551B7F-8BE2-4B4A-BB2B-F1A403C8F1EA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JADLL", "JADLL\JADLL.vcxproj", "{2A84B73F-0324-48E6-B984-760AAD0EBBAF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test", "Test\Test.vcxproj", "{02EA5213-2447-44F0-AA74-34CDB8F1A785}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E5551B7F-8BE2-4B4A-BB2B-F1A403C8F1EA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E5551B7F-8BE2-4B4A-BB2B-F1A403C8F1EA}.Debug|Win32.Build.0 = Debug|Win32
+		{E5551B7F-8BE2-4B4A-BB2B-F1A403C8F1EA}.Release|Win32.ActiveCfg = Release|Win32
+		{E5551B7F-8BE2-4B4A-BB2B-F1A403C8F1EA}.Release|Win32.Build.0 = Release|Win32
+		{2A84B73F-0324-48E6-B984-760AAD0EBBAF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2A84B73F-0324-48E6-B984-760AAD0EBBAF}.Debug|Win32.Build.0 = Debug|Win32
+		{2A84B73F-0324-48E6-B984-760AAD0EBBAF}.Release|Win32.ActiveCfg = Release|Win32
+		{2A84B73F-0324-48E6-B984-760AAD0EBBAF}.Release|Win32.Build.0 = Release|Win32
+		{02EA5213-2447-44F0-AA74-34CDB8F1A785}.Debug|Win32.ActiveCfg = Debug|Win32
+		{02EA5213-2447-44F0-AA74-34CDB8F1A785}.Debug|Win32.Build.0 = Debug|Win32
+		{02EA5213-2447-44F0-AA74-34CDB8F1A785}.Release|Win32.ActiveCfg = Release|Win32
+		{02EA5213-2447-44F0-AA74-34CDB8F1A785}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
