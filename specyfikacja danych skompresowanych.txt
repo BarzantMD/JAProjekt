@@ -1,0 +1,13 @@
+Dane podzielone na bloki (blok tworzony a¿ do zape³nienia s³ownika - po zape³nieniu, s³ownik jest resetowany i nastêpuje rozpoczêcie nowego bloku.
+
+Nag³ówek bloku:
+D³ugoœæ bloku danych (bez s³ownika) - s³ów kodowych, nie bajtów - 4 bajty
+Liczba znaków alfabetu - 1 bajt
+
+Odpowiednia iloœæ bajtów alfabetu (1 bajt - jeden znak)
+Blok danych - kody zapisane na 1 b¹dŸ 2 bajtach.
+
+
+
+
+Specyfikacja s³ownika w asemblerze.

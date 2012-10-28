@@ -6,23 +6,19 @@
 
 using namespace std;
 
+#define MAX_DICT_SIZE 65536 // maksymalny rozmiar s³ownika
+
 
 int main(int argc, char* argv[]) {
-	//cout << "hello world" << endl;
-	//char pZmienna[20] = "hello world";
-	//int z = TestProc((int)pZmienna,3);
-	//cout << "wynik testproc to: " << z << endl;
-	//cout << "Adres pzmienna to: " << (int)pZmienna << endl;
-	//cout << "Wartosc zmiennej to: " << pZmienna << endl;
-	int threadCount = 8; // default thread count
-
-	cout << "Hello world" << endl;
+// prototyp pracy wielu w¹tków
+/*
+	int threadCount = 1; // default thread count
 
 	DWORD* threadIDArray = new DWORD[threadCount];
 	HANDLE* handleArray = new HANDLE[threadCount];
 
 	for(int i = 0; i < threadCount; ++i) {
-		handleArray[i] = CreateThread(NULL, 0, CompressThread, NULL, 0, &threadIDArray[i]);
+		handleArray[i] = CreateThread(NULL, 0, CompressThread, &params, 0, &threadIDArray[i]);
 	}
 
 	WaitForMultipleObjects(threadCount, handleArray, TRUE, INFINITE);
@@ -35,18 +31,26 @@ int main(int argc, char* argv[]) {
 	for (int i = 0; i < threadCount; i++) {
 		cout << threadIDArray[i] << endl;
 	}
+*/
 
-	system("pause");
-	return 0;
+	//system("pause");
+	//return 0;
+
+
 
 	int c = parseCommand(argc, argv);
 	
+/* ====================================== */
+/* Nieznane polecenie - wyœwietlenie odpowiedniego komunikatu */
 	if(c == -1)
 		writeUnknow();
 
+/* ====================================== */
+/* KOMPRESJA */
 	if(c == 1 || c == 3) { // kompresja
 		cout << "Przygotowywanie do kompresji..." << endl;
 
+		// Parsowanie argumentów - ustalenie nazwy pliku Ÿród³owego i docelowego
 		string srcFilename = argv[2];
 		string destFilename;
 		if(argc == 3)
@@ -67,14 +71,46 @@ int main(int argc, char* argv[]) {
 		// za³adowanie zawartoœci pliku do pamiêci
 		srcFile.seekg(0, ios::end);
 		int filesize = srcFile.tellg();
+		srcFile.seekg(0, ios::beg);
 		cout << "Rozmiar pliku zrodlowego: " << filesize << endl;
 		
 		char* buffer = new char[filesize];
+
 		srcFile.read(buffer, filesize);
 		srcFile.close();
 
+		// przygotowanie parametrów i pamiêci dla procesu kompresji
+		CompressParams params;
+		params.srcData = buffer; // wskaŸnik na dane do kompresji
+		params.srcDataSize = filesize; // rozmiar danych do skompresowania
+		params.dictData = new char[MAX_DICT_SIZE]; // alokacja pamiêci dla s³ownika
+		params.dictSize = MAX_DICT_SIZE; // rozmiar s³ownika
+		params.compressedData = new char[filesize*2 + 256]; // zaalokowanie pamiêci dla skompresowanych danych
 
-		
+		// realizacja w pojedynczym watku
+		HANDLE h;
+		DWORD threadID;
+		h = CreateThread(NULL, 0, CompressThread, &params, 0, &threadID);
+		WaitForSingleObject(h, INFINITE);
+
+		cout << "Zakonczono watki" << endl;
+		cout << "Rozmiar danych skompresowanych: " << params.compressedDataSize << endl;
+
+		// zapis do pliku:
+
+		// wyliczenie rozmiaru danych do zapisu
+		// rozmiar s³ownika + rozmiar danych (iloœæ kodów * 2 bajty) + 5 bajtów nag³ówku (4 bajty rozmiaru danych + 1 bajt rozmiaru s³ownika)
+		int destSize = (int)(params.compressedData[4]) + params.compressedDataSize * 2 + 5;
+
+		// otwarcie i w³aœciwy zapis do pliku
+		fstream destFile;
+		destFile.open(destFilename.c_str(), ios::binary | ios::out | ios::trunc);
+		destFile.write(params.compressedData, destSize);
+		destFile.close();
+
+		// zwolnienie zasobów
+		delete params.dictData;
+		delete params.compressedData;
 		delete buffer;
 	}
 

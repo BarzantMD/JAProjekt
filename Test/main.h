@@ -1,32 +1,10 @@
-#ifndef LZW_H
-#define LZW_H
-#include <Windows.h>
-#include <string>
+#ifndef MAIN_H
+#define MAIN_H
+
 #include <iostream>
 
 using namespace std;
 
-DWORD WINAPI CompressThread(LPVOID lpParameter);
-
-// strukrua zawieraj¹ca parametry dla w¹tku
-struct CompressParams {
-	char* srcData; // dane do skompresowania
-	int srcDataSize; // rozmiar danych srcData
-	char* compressedData; // miejsce na skompresowane dane
-	int compressedDataSize; // rozmiar danych skompresowanych (w s³owach kodowych, nie bajtach)
-
-	char* dictData; // miejsce na dane s³ownika
-	int dictSize; // rozmiar s³ownika
-
-	CompressParams() :
-		srcData(NULL),
-		srcDataSize(0),
-		compressedData(NULL),
-		compressedDataSize(0),
-		dictData(NULL),
-		dictSize(0)
-	{}
-};
 
 // pojedynczy element s³ownika (jedno s³owo kodowe, jako czêœæ listy jednokierunkowej)
 struct Element {
@@ -112,9 +90,6 @@ public:
 		return size;
 	}
 
-	int getCount() {
-		return count;
-	}
 
 	Element* operator[](int index) {
 		if(index >= count) return NULL;
