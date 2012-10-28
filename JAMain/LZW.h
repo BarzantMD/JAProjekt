@@ -1,6 +1,7 @@
 #ifndef LZW_H
 #define LZW_H
+#include <Windows.h>
 
-int compress(char* srcData, int dataSize, char* &compressedData);
+DWORD WINAPI CompressThread(LPVOID lpParameter);
 
 #endif

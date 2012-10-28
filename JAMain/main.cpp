@@ -14,6 +14,30 @@ int main(int argc, char* argv[]) {
 	//cout << "wynik testproc to: " << z << endl;
 	//cout << "Adres pzmienna to: " << (int)pZmienna << endl;
 	//cout << "Wartosc zmiennej to: " << pZmienna << endl;
+	int threadCount = 8; // default thread count
+
+	cout << "Hello world" << endl;
+
+	DWORD* threadIDArray = new DWORD[threadCount];
+	HANDLE* handleArray = new HANDLE[threadCount];
+
+	for(int i = 0; i < threadCount; ++i) {
+		handleArray[i] = CreateThread(NULL, 0, CompressThread, NULL, 0, &threadIDArray[i]);
+	}
+
+	WaitForMultipleObjects(threadCount, handleArray, TRUE, INFINITE);
+	
+	for(int i = 0; i < threadCount; ++i) {
+		CloseHandle(handleArray[i]);
+	}
+	cout << "Zakonczono program" << endl;
+	cout << "ID watkow: " << endl;
+	for (int i = 0; i < threadCount; i++) {
+		cout << threadIDArray[i] << endl;
+	}
+
+	system("pause");
+	return 0;
 
 	int c = parseCommand(argc, argv);
 	
