@@ -2,3 +2,4 @@ LIBRARY "JADLL"
 EXPORTS
 MyProc1
 TestProc
+TestProc2

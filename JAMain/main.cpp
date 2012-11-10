@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <time.h>
 
 using namespace std;
 
@@ -36,8 +37,6 @@ int main(int argc, char* argv[]) {
 	//system("pause");
 	//return 0;
 
-
-
 	int c = parseCommand(argc, argv);
 	
 /* ====================================== */
@@ -46,8 +45,24 @@ int main(int argc, char* argv[]) {
 		writeUnknow();
 
 /* ====================================== */
+/* KOMPRESJA ASEMBLER */
+	if(c == 3) { // kompresja ASM
+		temp s;
+		s.a = 3;
+		s.b = 4;
+		cout << "Przed wywolaniem procedury:" << endl;
+		cout << "s.a = " << s.a << endl;
+		cout << "s.b = " << s.b << endl;
+		int result = TestProc2(&s);
+		cout << "Po wywolaniu procedury:" << endl;
+		cout << "s.a = " << s.a << endl;
+		cout << "s.b = " << s.b << endl;
+		cout << "result = " << result << endl;
+	}
+
+/* ====================================== */
 /* KOMPRESJA */
-	if(c == 1 || c == 3) { // kompresja
+	if(c == 1) { // kompresja C++
 		cout << "Przygotowywanie do kompresji..." << endl;
 
 		// Parsowanie argumentów - ustalenie nazwy pliku Ÿród³owego i docelowego
@@ -83,34 +98,106 @@ int main(int argc, char* argv[]) {
 		CompressParams params;
 		params.srcData = buffer; // wskaŸnik na dane do kompresji
 		params.srcDataSize = filesize; // rozmiar danych do skompresowania
-		params.dictData = new char[MAX_DICT_SIZE]; // alokacja pamiêci dla s³ownika
 		params.dictSize = MAX_DICT_SIZE; // rozmiar s³ownika
 		params.compressedData = new char[filesize*2 + 256]; // zaalokowanie pamiêci dla skompresowanych danych
 
 		// realizacja w pojedynczym watku
 		HANDLE h;
 		DWORD threadID;
+		unsigned int start = clock();
 		h = CreateThread(NULL, 0, CompressThread, &params, 0, &threadID);
 		WaitForSingleObject(h, INFINITE);
+		unsigned int stop = clock();
+		double time = static_cast<double>(stop - start) / CLOCKS_PER_SEC;
 
 		cout << "Zakonczono watki" << endl;
-		cout << "Rozmiar danych skompresowanych: " << params.compressedDataSize << endl;
+		cout << "Czas dzialania: " << time << " sekund" << endl;
+		cout << "Rozmiar danych skompresowanych: " << params.compressedDataSize * 2 << endl;
+		cout << "Ilosc blokow: " << params.blockCount << endl;
 
 		// zapis do pliku:
 
 		// wyliczenie rozmiaru danych do zapisu
-		// rozmiar s³ownika + rozmiar danych (iloœæ kodów * 2 bajty) + 5 bajtów nag³ówku (4 bajty rozmiaru danych + 1 bajt rozmiaru s³ownika)
-		int destSize = (int)(params.compressedData[4]) + params.compressedDataSize * 2 + 5;
+		// rozmiar s³ownika + rozmiar danych (iloœæ kodów * 2 bajty) + 4 bajty na ka¿dy blok + 1 bajt rozmiaru s³ownika
+		int destSize = (int)(params.compressedData[4]) + params.compressedDataSize * 2 + params.blockCount * 4 + 1;
 
 		// otwarcie i w³aœciwy zapis do pliku
 		fstream destFile;
 		destFile.open(destFilename.c_str(), ios::binary | ios::out | ios::trunc);
+		destFile.write((char*)(&params.blockCount), 2);
 		destFile.write(params.compressedData, destSize);
 		destFile.close();
 
 		// zwolnienie zasobów
-		delete params.dictData;
 		delete params.compressedData;
+		delete buffer;
+	}
+
+
+
+/* ====================================== */
+/* DEKOMPRESJA */
+	if(c == 2 || c == 4) { // dekompresja
+		cout << "Przygotowywanie do dekompresji..." << endl;
+
+		// Parsowanie argumentów - ustalenie nazwy pliku Ÿród³owego i docelowego
+		string srcFilename = argv[2];
+		string destFilename;
+		if(argc == 3)
+			destFilename = srcFilename + "unpacked.txt";
+		else
+			destFilename = argv[3];
+
+		
+		fstream srcFile;
+		srcFile.open(srcFilename.c_str(), ios::binary | ios::in); // otwarcie pliku Ÿród³owego
+
+		if(!srcFile.is_open()) { // sprawdzenie czy plik Ÿród³owy istnieje
+			cout << "Nie mozna otworzyc pliku zrodlowego lub plik nie istnieje!";
+			system("pause");
+			return 0;
+		}
+
+		// za³adowanie zawartoœci pliku do pamiêci
+		srcFile.seekg(0, ios::end);
+		int filesize = srcFile.tellg();
+		srcFile.seekg(0, ios::beg);
+		cout << "Rozmiar pliku zrodlowego: " << filesize << endl;
+		
+		char* buffer = new char[filesize];
+
+		srcFile.read(buffer, filesize);
+		srcFile.close();
+
+		// przygotowanie parametrów i pamiêci dla procesu dekompresji
+		DecompressParams params;
+		params.compressedData = buffer; // wskaŸnik na dane do dekompresji
+		params.compressedDataSize = filesize;
+		params.decompressedData = new char[filesize*3]; // wstêpnie oszacowana pamiêæ na zdekompresowane dane
+
+		// realizacja w pojedynczym watku
+		HANDLE h;
+		DWORD threadID;
+		unsigned int start = clock();
+		h = CreateThread(NULL, 0, DecompressThread, &params, 0, &threadID);
+		WaitForSingleObject(h, INFINITE);
+		unsigned int stop = clock();
+		double time = static_cast<double>(stop - start) / CLOCKS_PER_SEC;
+
+		cout << "Zakonczono watki" << endl;
+		cout << "Czas dzialania: " << time << " sekund" << endl;
+		cout << "Rozmiar danych zdekompresowanych: " << params.decompressedDataSize << endl;
+
+		// zapis do pliku:
+
+		// otwarcie i w³aœciwy zapis do pliku
+		fstream destFile;
+		destFile.open(destFilename.c_str(), ios::binary | ios::out | ios::trunc);
+		destFile.write(params.decompressedData, params.decompressedDataSize);
+		destFile.close();
+
+		// zwolnienie zasobów
+		delete params.decompressedData;
 		delete buffer;
 	}
 

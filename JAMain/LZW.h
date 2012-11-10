@@ -4,18 +4,20 @@
 #include <string>
 #include <iostream>
 
+#define MAX_DICT_DATA_SIZE 65536
+
 using namespace std;
 
 DWORD WINAPI CompressThread(LPVOID lpParameter);
+DWORD WINAPI DecompressThread(LPVOID lpParameter);
 
-// strukrua zawieraj鉍a parametry dla w靖ku
+// strukrua zawieraj鉍a parametry dla w靖ku kompresji
 struct CompressParams {
 	char* srcData; // dane do skompresowania
 	int srcDataSize; // rozmiar danych srcData
 	char* compressedData; // miejsce na skompresowane dane
 	int compressedDataSize; // rozmiar danych skompresowanych (w s這wach kodowych, nie bajtach)
-
-	char* dictData; // miejsce na dane s這wnika
+	unsigned short blockCount;
 	int dictSize; // rozmiar s這wnika
 
 	CompressParams() :
@@ -23,8 +25,22 @@ struct CompressParams {
 		srcDataSize(0),
 		compressedData(NULL),
 		compressedDataSize(0),
-		dictData(NULL),
-		dictSize(0)
+		blockCount(0)
+	{}
+};
+
+// strukrua zawieraj鉍a parametry dla w靖ku dekompresji
+struct DecompressParams {
+	char* compressedData; // dane do dekompresji
+	int compressedDataSize; // rozmiar danych do dekompresji
+	char* decompressedData; // miejsce na rozpakowane dane
+	int decompressedDataSize; // rozmiar danych po dekompresji
+
+	DecompressParams() :
+		compressedData(NULL),
+		compressedDataSize(0),
+		decompressedData(NULL),
+		decompressedDataSize(0)
 	{}
 };
 
@@ -73,6 +89,13 @@ public:
 		delete tmp;
 	}
 
+	// inicjalizacja s這wnika alfabetem
+	void initAlphabet(char* alphabetArray, unsigned char alphabetSize) {
+		for (int i = 0; i < alphabetSize; i++) {
+			addCodeword(&(alphabetArray[i]), 1);
+		}
+	}
+
 	// dodawanie s堯w kodowych do s這wnika
 	int addCodeword(char* pWord, int length) {
 		if(head == NULL) {
@@ -106,6 +129,16 @@ public:
 			tmp = tmp->next;
 		}
 		return result;
+	}
+
+	Element* getElementById(int id) {
+		if(id >= count)
+			return NULL;
+		Element* tmp = head;
+		for (int i = 0; i < id; i++) {
+			tmp = tmp->next;
+		}
+		return tmp;
 	}
 
 	int getSize() {

@@ -29,17 +29,21 @@ int main() {
 
 	//cout << "Zawartosc data: " << data << "|" << endl;
 
-	char* data = new char[20];
-	short* data2 = (short*)data;
+	unsigned short a = 35000;
 
-	cout << "data: " << hex << (int)data << endl;
-	cout << "data2: " << hex << (int)data2 << endl;
-	
-	data = data + 5;
-	data2 = data2 + 5;
+	int b = a;
+	int c = 40000;
 
-	cout << "data: " << hex << (int)data << endl;
-	cout << "data2: " << hex << (int)data2 << endl;
+	cout << "a = " << a << endl;
+	cout << "b = " << b << endl;
+	cout << "c = " << c << endl;
+
+	a = c;
+
+	cout << "a = " << a << endl;
+	cout << "b = " << b << endl;
+	cout << "c = " << c << endl;
+
 
 	system("pause");
 	return 0;
