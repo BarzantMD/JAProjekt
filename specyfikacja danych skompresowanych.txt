@@ -2,18 +2,19 @@ Dane podzielone na bloki (blok tworzony a¿ do zape³nienia s³ownika - po zape³nie
 
 Nag³ówek pliku:
 Iloœæ bloków (2 bajty)
+Liczba znaków alfabetu - 1 bajt
+Odpowiednia iloœæ bajtów alfabetu
+
 
 Nag³ówek bloku:
-D³ugoœæ bloku danych (bez s³ownika) - s³ów kodowych, nie bajtów - 4 bajty
-Liczba znaków alfabetu - 1 bajt (tylko pierwszy blok)
-
-Odpowiednia iloœæ bajtów alfabetu (1 bajt - jeden znak) (tylko pierwszy blok)
+D³ugoœæ bloku danych - iloœæ s³ów kodowych, nie bajtów - 4 bajty
 Blok danych - kody zapisane na 1 b¹dŸ 2 bajtach.
 
 
-
-
 Specyfikacja s³ownika w asemblerze.
+Naprzemiennie:
+2 bajty okreœlaj¹ce ile kolejnych bajtów to element s³ownika
+Odpowiednia iloœæ bajtów ci¹gu.
 
 ===========================
 Specyfikacja tak jak teraz jest:

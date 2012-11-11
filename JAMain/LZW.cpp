@@ -11,35 +11,36 @@ DWORD WINAPI CompressThread (LPVOID lpParameter) {
 	
 	char* srcDataPointer = pParams->srcData; // wskaŸnik na dane do skompresowania
 	char* compressedDataPointer = pParams->compressedData; // wskaŸnik na miejsce w pamiêci, gdzie bêdzie zaczynaæ siê blok
-	char* alphabetPointer = compressedDataPointer + 5; // alfabet zaczyna siê od 6 bajtu (licz¹c od 0)
+	char* alphabetPointer = pParams->alphabet; // wskaŸnik na alfabet
+	unsigned char alphabetSize = pParams->alphabetSize; // rozmiar alfabetu
 
-	// analiza alfabetu
-	unsigned char alphabetSize = 0; // iloœæ znaków w alfabecie
-	for (int i = 0; i < pParams->srcDataSize; i++) { // przegl¹damy ca³e dane
-		bool isAlready = false; // czy jest ju¿ w s³owniku
+	//// analiza alfabetu
+	//unsigned char alphabetSize = 0; // iloœæ znaków w alfabecie
+	//for (int i = 0; i < pParams->srcDataSize; i++) { // przegl¹damy ca³e dane
+	//	bool isAlready = false; // czy jest ju¿ w s³owniku
 
-		for (int j = 0; j < alphabetSize; j++) { // pêtla porównuj¹ca znak z pêtli wy¿ej z ka¿dym znakiem z dotychczasowego alfabetu
-			if(alphabetPointer[j] == srcDataPointer[i]) {
-				isAlready = true; // znak wystêpuje ju¿ w alfabecie
-				break;
-			}
-		}
+	//	for (int j = 0; j < alphabetSize; j++) { // pêtla porównuj¹ca znak z pêtli wy¿ej z ka¿dym znakiem z dotychczasowego alfabetu
+	//		if(alphabetPointer[j] == srcDataPointer[i]) {
+	//			isAlready = true; // znak wystêpuje ju¿ w alfabecie
+	//			break;
+	//		}
+	//	}
 
-		if(!isAlready) {
-				alphabetPointer[alphabetSize] = srcDataPointer[i]; // dodajemy nowy znak do alfabetu
-				alphabetSize++;
-			}
-	}
+	//	if(!isAlready) {
+	//			alphabetPointer[alphabetSize] = srcDataPointer[i]; // dodajemy nowy znak do alfabetu
+	//			alphabetSize++;
+	//		}
+	//}
 
-	compressedDataPointer[4] = alphabetSize; // zapisanie na 4. bajt iloœci znaków w alfabecie
-	cout << "Rozmiar alfabetu: " << (int)alphabetSize << endl;
+	//compressedDataPointer[4] = alphabetSize; // zapisanie na 4. bajt iloœci znaków w alfabecie
+	//cout << "Rozmiar alfabetu: " << (int)alphabetSize << endl;
 
 	// dodanie alfabetu do s³ownika
 	Dictionary* dict = new Dictionary;
 	dict->initAlphabet(alphabetPointer, alphabetSize);
 	
 	// w³aœciwy algorytm kodowania (kompresji)
-	short* compressedCodePointer = (short*)(compressedDataPointer + 5 + alphabetSize); // wskaŸnik na miejsce, od którego bêdziemy umieszczaæ zakodowane dane (po alfabecie) w danym bloku
+	short* compressedCodePointer = (short*)(compressedDataPointer + 4); // wskaŸnik na miejsce, od którego bêdziemy umieszczaæ zakodowane dane (po 4 bajtach liczby kodów) w danym bloku
 	int compressedDataSize = 0; // rozmiar (iloœæ kodów) skompresowanych danych w bloku
 	int summaryCompressedDataSize = 0;
 	int lastCode = 0; // kod ostatniego rozpoznanego s³owa kodowego
@@ -107,22 +108,30 @@ DWORD WINAPI DecompressThread (LPVOID lpParameter) {
 	DecompressParams* pParams = (DecompressParams*) lpParameter; // Uzyskanie struktury z parametrami.
 	
 	char* compressedDataPointer = pParams->compressedData; // wskaŸnik na skompresowane dane
-	int compressedDataSize = pParams->compressedDataSize; // rozmiar danych skompresowanych
 	char* decompressedDataPointer = pParams->decompressedData; // wskaŸnik na pamiêæ, gdzie bêdziemy umieszczaæ rozpakowane dane
 	char* out = decompressedDataPointer; // kopia wskaŸnika, na której bêdziemy operowaæ (przesuwaæ siê po pamiêci)
 	int decompressedDataSize = 0; // liczba przechowuj¹ca rozmiar danych zdekompresowanych
 
 	// wczytanie alfabetu
-	unsigned short blockCount = ((short*)compressedDataPointer)[0]; // odczytujemy iloœæ bloków
-	compressedDataPointer += 2; // przesuwamy siê za iloœæ bloków (dwa bajty w przód - jeden short)
-	unsigned char alphabetSize = compressedDataPointer[4]; // iloœæ znaków w alfabecie (zapisana na 4. bajcie numeruj¹c od 0)
-	char* alphabetPointer = compressedDataPointer + 5; // alfabet zaczyna siê od 5. bajtu numeruj¹c od 0
-	short* compressedCodePointer = (short*)(alphabetPointer + alphabetSize); // wskaŸnik na kody skompresowanych danych pierwszego bloku
-	int blockSize = ((int*)compressedDataPointer)[0]; // odczytujemy iloœæ kodów w pierwszym bloku (pierwsze 4 bajty)
+	//unsigned short blockCount = ((short*)compressedDataPointer)[0]; // odczytujemy iloœæ bloków
+	unsigned short blockCount = pParams->blockCount;
+	//compressedDataPointer += 2; // przesuwamy siê za iloœæ bloków (dwa bajty w przód - jeden short)
+	//unsigned char alphabetSize = compressedDataPointer[4]; // iloœæ znaków w alfabecie (zapisana na 4. bajcie numeruj¹c od 0)
+	//char* alphabetPointer = compressedDataPointer + 5; // alfabet zaczyna siê od 5. bajtu numeruj¹c od 0
+	unsigned char alphabetSize = pParams->alphabetSize; // iloœæ znaków w alfabecie
+	char* alphabetPointer = pParams->alphabet; // wskaŸnik na alfabet
+	//short* compressedCodePointer = (short*)(alphabetPointer + alphabetSize); // wskaŸnik na kody skompresowanych danych pierwszego bloku
+	//short* compressedCodePointer = (short*)(compressedDataPointer + 4); // wskaŸnik na kody skompresowanych danych 1. bloku (za rozmiarem bloku)
+	short* compressedCodePointer = (short*)(compressedDataPointer); // wskaŸnik na pierwszy blok danych
+	//int blockSize = ((int*)compressedDataPointer)[0]; // odczytujemy iloœæ kodów w pierwszym bloku (pierwsze 4 bajty)
+	int blockSize = 0;
 
 	cout << "Ilosc blokow: " << blockCount << endl;
 
 	for (int i = 0; i < blockCount; i++) {
+
+		blockSize = ((int*)compressedCodePointer)[0]; // odczytujemy iloœæ kodów w bloku
+		compressedCodePointer += 2; // przesuwamy siê o 4 bajty (2 shorty) - za 4 bajty iloœci kodów, tam gdzie zaczynaj¹ siê kody kolejnego bloku
 		cout << "Rpzmiar bloku: " << blockSize <<endl;
 
 		Dictionary dict;
@@ -161,10 +170,6 @@ DWORD WINAPI DecompressThread (LPVOID lpParameter) {
 		}
 
 		compressedCodePointer += blockSize; // przesuwamy siê do nastêpnego bloku
-		blockSize = ((int*)compressedCodePointer)[0]; // odczytujemy iloœæ kodów w kolejnym bloku
-		compressedCodePointer += 2; // przesuwamy siê o 4 bajty (2 shorty) - za 4 bajty iloœci kodów, tam gdzie zaczynaj¹ siê kody kolejnego bloku
-
-
 	}
 
 	pParams->decompressedDataSize = decompressedDataSize; // zwracamy informacjê o rozmiarze danych zdekompresowanych

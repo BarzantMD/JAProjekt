@@ -1,5 +1,4 @@
 LIBRARY "JADLL"
 EXPORTS
-CompressAsm
+CompressThreadAsm
 TestProc
-CompareBytes

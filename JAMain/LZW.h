@@ -19,28 +19,37 @@ struct CompressParams {
 	int compressedDataSize; // rozmiar danych skompresowanych (w s³owach kodowych, nie bajtach)
 	unsigned short blockCount;
 	int dictSize; // rozmiar s³ownika
+	char* alphabet; // wskaŸnik na alfabet
+	unsigned char alphabetSize;  // liczba znaków w alfabecie
 
 	CompressParams() :
 		srcData(NULL),
 		srcDataSize(0),
 		compressedData(NULL),
 		compressedDataSize(0),
-		blockCount(0)
+		blockCount(0),
+		dictSize(0),
+		alphabet(NULL),
+		alphabetSize(0)
 	{}
 };
 
 // strukrua zawieraj¹ca parametry dla w¹tku dekompresji
 struct DecompressParams {
 	char* compressedData; // dane do dekompresji
-	int compressedDataSize; // rozmiar danych do dekompresji
 	char* decompressedData; // miejsce na rozpakowane dane
 	int decompressedDataSize; // rozmiar danych po dekompresji
+	char* alphabet; // wskaŸnik na alfabet
+	unsigned char alphabetSize;  // liczba znaków w alfabecie
+	unsigned short blockCount; // iloœæ bloków w danych do dekompresji
 
 	DecompressParams() :
 		compressedData(NULL),
-		compressedDataSize(0),
 		decompressedData(NULL),
-		decompressedDataSize(0)
+		decompressedDataSize(0),
+		alphabet(NULL),
+		alphabetSize(0),
+		blockCount(0)
 	{}
 };
 

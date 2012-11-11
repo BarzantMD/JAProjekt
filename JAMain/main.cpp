@@ -47,11 +47,101 @@ int main(int argc, char* argv[]) {
 /* ====================================== */
 /* KOMPRESJA ASEMBLER */
 	if(c == 3) { // kompresja ASM
+		cout << "Przygotowywanie do kompresji..." << endl;
+
+		// Parsowanie argumentów - ustalenie nazwy pliku Ÿród³owego i docelowego
+		string srcFilename = argv[2];
+		string destFilename;
+		if(argc == 3)
+			destFilename = srcFilename + ".packed";
+		else
+			destFilename = argv[3];
+
+		
+		fstream srcFile;
+		srcFile.open(srcFilename.c_str(), ios::binary | ios::in); // otwarcie pliku Ÿród³owego
+
+		if(!srcFile.is_open()) { // sprawdzenie czy plik Ÿród³owy istnieje
+			cout << "Nie mozna otworzyc pliku zrodlowego lub plik nie istnieje!";
+			system("pause");
+			return 0;
+		}
+
+		// za³adowanie zawartoœci pliku do pamiêci
+		srcFile.seekg(0, ios::end);
+		int filesize = srcFile.tellg();
+		srcFile.seekg(0, ios::beg);
+		cout << "Rozmiar pliku zrodlowego: " << filesize << endl;
+		
+		char* buffer = new char[filesize];
+
+		srcFile.read(buffer, filesize);
+		srcFile.close();
+
+		// przygotowanie alfabetu
+		char* alphabet = new char[256]; // zarezerwowanie pamiêci dla alfabetu - max 256B
+
+		unsigned char alphabetSize = 0; // iloœæ znaków w alfabecie
+		for (int i = 0; i < filesize; i++) { // przegl¹damy ca³e dane
+			bool isAlready = false; // czy jest ju¿ w s³owniku
+
+			for (int j = 0; j < alphabetSize; j++) { // pêtla porównuj¹ca znak z pêtli wy¿ej z ka¿dym znakiem z dotychczasowego alfabetu
+				if(alphabet[j] == buffer[i]) {
+					isAlready = true; // znak wystêpuje ju¿ w alfabecie
+					break;
+				}
+			}
+
+			if(!isAlready) {
+					alphabet[alphabetSize] = buffer[i]; // dodajemy nowy znak do alfabetu
+					alphabetSize++;
+				}
+		}
+
+		// przygotowanie parametrów i pamiêci dla procesu kompresji
 		CompressParamsAsm params;
-		params.dictSize = 5;
-		cout << "Rozmiar slownika przed: " << params.dictSize << endl;
-		CompressAsm(&params);
-		cout << "Rozmiar slownika po: " << params.dictSize << endl;
+		params.srcData = buffer; // wskaŸnik na dane do kompresji
+		params.srcDataSize = filesize; // rozmiar danych do skompresowania
+		params.dictData = new char[MAX_DICT_DATA_SIZE * 2];
+		params.dictSize = MAX_DICT_SIZE; // rozmiar s³ownika
+		params.compressedData = new char[filesize*2 + 256]; // zaalokowanie pamiêci dla skompresowanych danych
+		params.alphabet = alphabet;
+		params.alphabetSize = alphabetSize;
+
+		// realizacja w pojedynczym watku
+		HANDLE h;
+		DWORD threadID;
+		unsigned int start = clock();
+		h = CreateThread(NULL, 0, CompressThreadAsm, &params, 0, &threadID);
+		WaitForSingleObject(h, INFINITE);
+		unsigned int stop = clock();
+		double time = static_cast<double>(stop - start) / CLOCKS_PER_SEC;
+
+		cout << "Zakonczono watki" << endl;
+		cout << "Czas dzialania: " << time << " sekund" << endl;
+		cout << "Rozmiar danych skompresowanych: " << params.compressedDataSize * 2 << endl;
+		cout << "Ilosc blokow: " << params.blockCount << endl;
+
+
+		// zapis do pliku:
+
+		// wyliczenie rozmiaru danych do zapisu
+		// rozmiar danych (iloœæ kodów * 2 bajty) + 4 bajty na ka¿dy blok
+		int destSize = (int)(params.compressedDataSize * 2 + params.blockCount * 4);
+
+		// otwarcie i w³aœciwy zapis do pliku
+		fstream destFile;
+		destFile.open(destFilename.c_str(), ios::binary | ios::out | ios::trunc);
+		destFile.write((char*)(&params.blockCount), 2); // zapis iloœci bloków
+		destFile.write((char*)(&alphabetSize), 1); // zapis rozmiar alfabetu
+		destFile.write(alphabet, alphabetSize); // zapis alfabetu
+		destFile.write(params.compressedData, destSize);
+		destFile.close();
+
+		// zwolnienie zasobów
+		delete params.compressedData;
+		delete buffer;
+		delete params.dictData;
 	}
 
 /* ====================================== */
@@ -88,12 +178,34 @@ int main(int argc, char* argv[]) {
 		srcFile.read(buffer, filesize);
 		srcFile.close();
 
+		// przygotowanie alfabetu
+		char* alphabet = new char[256]; // zarezerwowanie pamiêci dla alfabetu - max 256B
+
+		unsigned char alphabetSize = 0; // iloœæ znaków w alfabecie
+		for (int i = 0; i < filesize; i++) { // przegl¹damy ca³e dane
+			bool isAlready = false; // czy jest ju¿ w s³owniku
+
+			for (int j = 0; j < alphabetSize; j++) { // pêtla porównuj¹ca znak z pêtli wy¿ej z ka¿dym znakiem z dotychczasowego alfabetu
+				if(alphabet[j] == buffer[i]) {
+					isAlready = true; // znak wystêpuje ju¿ w alfabecie
+					break;
+				}
+			}
+
+			if(!isAlready) {
+					alphabet[alphabetSize] = buffer[i]; // dodajemy nowy znak do alfabetu
+					alphabetSize++;
+				}
+		}
+
 		// przygotowanie parametrów i pamiêci dla procesu kompresji
 		CompressParams params;
 		params.srcData = buffer; // wskaŸnik na dane do kompresji
 		params.srcDataSize = filesize; // rozmiar danych do skompresowania
 		params.dictSize = MAX_DICT_SIZE; // rozmiar s³ownika
 		params.compressedData = new char[filesize*2 + 256]; // zaalokowanie pamiêci dla skompresowanych danych
+		params.alphabet = alphabet;
+		params.alphabetSize = alphabetSize;
 
 		// realizacja w pojedynczym watku
 		HANDLE h;
@@ -112,13 +224,15 @@ int main(int argc, char* argv[]) {
 		// zapis do pliku:
 
 		// wyliczenie rozmiaru danych do zapisu
-		// rozmiar s³ownika + rozmiar danych (iloœæ kodów * 2 bajty) + 4 bajty na ka¿dy blok + 1 bajt rozmiaru s³ownika
-		int destSize = (int)(params.compressedData[4]) + params.compressedDataSize * 2 + params.blockCount * 4 + 1;
+		// rozmiar danych (iloœæ kodów * 2 bajty) + 4 bajty na ka¿dy blok
+		int destSize = (int)(params.compressedDataSize * 2 + params.blockCount * 4);
 
 		// otwarcie i w³aœciwy zapis do pliku
 		fstream destFile;
 		destFile.open(destFilename.c_str(), ios::binary | ios::out | ios::trunc);
-		destFile.write((char*)(&params.blockCount), 2);
+		destFile.write((char*)(&params.blockCount), 2); // zapis iloœci bloków
+		destFile.write((char*)(&alphabetSize), 1); // zapis rozmiar alfabetu
+		destFile.write(alphabet, alphabetSize); // zapis alfabetu
 		destFile.write(params.compressedData, destSize);
 		destFile.close();
 
@@ -163,11 +277,18 @@ int main(int argc, char* argv[]) {
 		srcFile.read(buffer, filesize);
 		srcFile.close();
 
+		// przygotowanie alfabetu
+		char* alphabet = new char[256]; // zarezerwowanie pamiêci dla alfabetu - max 256B
+		unsigned char alphabetSize = buffer[2]; // wczytujemy iloœæ znaków w alfabecie
+		memcpy(alphabet, &(buffer[3]), alphabetSize); // kopiujemy alfabet (od 3. bajtu licz¹c od zera)
+
 		// przygotowanie parametrów i pamiêci dla procesu dekompresji
 		DecompressParams params;
-		params.compressedData = buffer; // wskaŸnik na dane do dekompresji
-		params.compressedDataSize = filesize;
+		params.compressedData = (buffer + 2 + 1 + alphabetSize); // wskaŸnik na dane do dekompresji (na pierwszy blok) (2 bajty iloœci bloków, 1 bajt rozmiaru alfabetu, odpowiednia iloœæ bajtów alfabetu)
 		params.decompressedData = new char[filesize*3]; // wstêpnie oszacowana pamiêæ na zdekompresowane dane
+		params.alphabet = alphabet;
+		params.alphabetSize = alphabetSize;
+		params.blockCount = ((short*)(buffer))[0]; // iloœæ bloków danych
 
 		// realizacja w pojedynczym watku
 		HANDLE h;

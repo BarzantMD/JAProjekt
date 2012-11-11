@@ -3,20 +3,22 @@
 #include <Windows.h>
 
 extern "C" int _stdcall TestProc (LPVOID var);
-extern "C" int _stdcall CompressAsm (LPVOID params);
+extern "C" DWORD WINAPI CompressThreadAsm (LPVOID params);
 
 int parseCommand(int argc, char* argv[]);
 void writeHelp();
 void writeUnknow();
 
 struct CompressParamsAsm {
-	char* srcData; // dane do skompresowania
-	int srcDataSize; // rozmiar danych srcData
-	char* compressedData; // miejsce na skompresowane dane
-	int compressedDataSize; // rozmiar danych skompresowanych (w s³owach kodowych, nie bajtach)
-	char* dictData; // miejsce na s³ownik
-	int dictSize; // rozmiar s³ownika
-	unsigned short blockCount; // iloœæ bloków skompresowanych danych
+	char* srcData; // OFFSET:0  ;dane do skompresowania
+	int srcDataSize; // OFFSET:4  ;rozmiar danych srcData
+	char* compressedData; // OFFSET:8  ;miejsce na skompresowane dane
+	int compressedDataSize; // OFFSET:12  ;rozmiar danych skompresowanych (w s³owach kodowych, nie bajtach)
+	int blockCount; // OFFSET:16
+	char* dictData; // OFFSET:20  ;miejsce na s³ownik
+	int dictSize; // OFFSET:24  ;rozmiar s³ownika
+	char* alphabet; // OFFSET:28  ;wskaŸnik na alfabet
+	int alphabetSize;  // OFFSET:32  ;liczba znaków w alfabecie
 
 	CompressParamsAsm() :
 		srcData(NULL),
@@ -25,7 +27,9 @@ struct CompressParamsAsm {
 		compressedDataSize(0),
 		blockCount(0),
 		dictData(NULL),
-		dictSize(0)
+		dictSize(0),
+		alphabet(NULL),
+		alphabetSize(0)
 	{}
 };
 
