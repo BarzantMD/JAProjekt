@@ -11,7 +11,7 @@ DWORD WINAPI CompressThread (LPVOID lpParameter) {
 	
 	char* srcDataPointer = pParams->srcData; // wskaŸnik na dane do skompresowania
 	char* compressedDataPointer = pParams->compressedData; // wskaŸnik na miejsce w pamiêci, gdzie bêdzie zaczynaæ siê blok
-	char* alphabetPointer = compressedDataPointer + 5; // alfabet zaczyna siê od 5. bajtu
+	char* alphabetPointer = compressedDataPointer + 5; // alfabet zaczyna siê od 6 bajtu (licz¹c od 0)
 
 	// analiza alfabetu
 	unsigned char alphabetSize = 0; // iloœæ znaków w alfabecie

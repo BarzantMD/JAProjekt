@@ -1,5 +1,5 @@
 LIBRARY "JADLL"
 EXPORTS
-MyProc1
+CompressAsm
 TestProc
-TestProc2
+CompareBytes

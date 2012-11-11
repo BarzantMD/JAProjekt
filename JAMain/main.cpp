@@ -47,17 +47,11 @@ int main(int argc, char* argv[]) {
 /* ====================================== */
 /* KOMPRESJA ASEMBLER */
 	if(c == 3) { // kompresja ASM
-		temp s;
-		s.a = 3;
-		s.b = 4;
-		cout << "Przed wywolaniem procedury:" << endl;
-		cout << "s.a = " << s.a << endl;
-		cout << "s.b = " << s.b << endl;
-		int result = TestProc2(&s);
-		cout << "Po wywolaniu procedury:" << endl;
-		cout << "s.a = " << s.a << endl;
-		cout << "s.b = " << s.b << endl;
-		cout << "result = " << result << endl;
+		CompressParamsAsm params;
+		params.dictSize = 5;
+		cout << "Rozmiar slownika przed: " << params.dictSize << endl;
+		CompressAsm(&params);
+		cout << "Rozmiar slownika po: " << params.dictSize << endl;
 	}
 
 /* ====================================== */
