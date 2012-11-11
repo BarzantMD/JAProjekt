@@ -5,8 +5,8 @@
 printf PROTO C :VARARG
 
 .data
-ALPHABET_POINTER DD 0 ; wskaŸnik na alfabet
-ALPHABET_SIZE DB 0 ;iloœæ s³ów w alfabecie
+;ALPHABET_POINTER DD 0 ; wskaŸnik na alfabet
+;ALPHABET_SIZE DB 0 ;iloœæ s³ów w alfabecie
 
 DICT_POINTER DD 0 ; wskaŸnik na obszar pamiêci dla s³ownika
 DICT_END_POINTER DD 0 ; wskaŸnik na pierwszy wolny bajt s³ownika 
@@ -28,27 +28,6 @@ LAST_CODE DD 0 ; kod ostatnio rozpoznanego ci¹gu
 TEMP_CODE DD 0 ; tymczasowy kod rozpozanego ci¹gu
 
 .code
-; ============================================================================;
-; Procedura porównuje dwa ci¹gi bajtów i zwraca wynik w rejestrze eax.
-; eax = 0 => ci¹gi s¹ takie same
-; eax != 0 => ci¹gi s¹ ró¿ne
-; ============================================================================;
-CompareBytes PROC arg1: DWORD, arg2: DWORD, len: DWORD
-	CLD ; inkrementujemy ESI i EDI
-	MOV esi, arg1
-	MOV edi, arg2
-	MOV ecx, len ; za³aduj iloœæ bajtów do licznika
-
-	; porównywanie kolejnych bajtów a¿ do napotkania ró¿nicy b¹dŸ wyzerowania licznika
-cmpLoop:
-	CMPSB
-	LOOPE cmpLoop
-	MOV eax, 1 ; domyœlne zwrócenie, ¿e ci¹gi s¹ ró¿ne
-	MOV ebx, 0
-	CMOVE eax, ebx ; jeœli s¹ takie same, to zwrócenie 0
-
-	RET
-CompareBytes ENDP
 
 ; ============================================================================;
 ; Procedura dodaje nowe s³owo kodowe do s³ownika.
@@ -82,6 +61,7 @@ dictAddCodeword ENDP
 ; ============================================================================;
 dictInitAlphabet PROC
 	; zachowanie rejestrów
+	PUSHAD
 	MOV ecx, [ebx + 32] ; odczytanie iloœci znaków w alfabecie
 	MOV esi, [ebx + 28] ; wskaŸnik na alfabet
 
@@ -90,6 +70,7 @@ alphabetLoop:
 	ADD esi, 1
 	LOOP alphabetLoop
 
+	POPAD
 	RET
 dictInitAlphabet ENDP
 
@@ -102,6 +83,8 @@ dictInit PROC
 	MOV DICT_END_POINTER, eax ; pierwszym wolnym bajtem jest pocz¹tek
 	MOV eax, [ebx + 24] ; ustawiamy maksymalny rozmiar danych w s³owniku
 	MOV DICT_MAX_SIZE, eax
+	MOV DICT_CUR_SIZE, 0
+	MOV DICT_COUNT, 0
 	RET
 dictInit ENDP
 
@@ -202,6 +185,39 @@ dataLoop:
 	SUB esi, 1 ; cofamy siê o jeden znak
 	MOV edx, 1 ; ustawiamy d³ugoœæ nowego analizowanego ci¹gu na 1
 
+	; analiza czy s³ownik osi¹gn¹³ limit rozmiaru (DICT_MAX_SIZE)
+	MOV eax, DICT_CUR_SIZE
+	CMP DICT_MAX_SIZE, eax
+	JG ok ; rozmiar jeszcze nie przekroczy³
+
+	; analiza czy s³ownik osi¹gn¹³ limit elementów (na sztywno ustawiony na 65536 elementów)
+	CMP DICT_COUNT, 65536
+	JG ok ; nie osi¹gn¹³ limitu elementów
+
+	; s³ownik osi¹gn¹³ limit, trzeba wyczyœciæ, utworzyæ nowy, i rozpocz¹æ nowy blok
+	; 1. inicjalizacja nowego s³ownika
+	MOV ebx, params ; ebx dla kolejnych dwóch procedur bêdzie wskazywa³ strukturê params
+	INVOKE dictInit ; inicjalizacja zmiennych s³ownika
+	INVOKE dictInitAlphabet ; inicjalizacja s³ownika alfabetem
+
+	; 2. zapisanie rozmiaru bloku, dodanie do sumarycznego rozmiaru
+	MOV ebx, CUR_BLOCK_POINTER ; pobranie adresu pocz¹tku bloku
+	MOV eax, COMPRESSED_DATA_SIZE
+	MOV [ebx], eax
+	ADD SUMMARY_COMPRESSED_DATA_SIZE, eax
+
+	; 3. zwiêkszenie numeracji iloœci bloków
+	ADD BLOCK_COUNT, 1
+	
+	; 4. ustawienie nowego bloku
+	ADD eax, eax ; otrzymanie iloœci bajtów danych skompresowanych
+	ADD eax, 4 ; dodanie 4 bajtów rozmiaru z pocz¹tku bloku
+	ADD CUR_BLOCK_POINTER, eax ; ustalenie nowego pocz¹tku bloku
+	MOV edi, CUR_BLOCK_POINTER ; nowe miejsce zapisu kodów
+	ADD edi, 4 ; zarezerwowanie 4 bajtów na rozmiar nowego bloku
+	MOV COMPRESSED_DATA_SIZE, 0 ; wyzerowanie aktualnego rozmiaru danych skompresowanych
+
+ok:
 	; aktualizujemy ostatnio rozpoznany ci¹g
 	INVOKE dictGetCodewordId ; musi byæ w s³owniku, poniewa¿ jest to pojedynczy znak alfabetu
 	;MOV LAST_CODEWORD_POINTER, TEMP_CODEWORD_POINTER
@@ -210,7 +226,9 @@ next:
 	;MOV LAST_CODEWORD_POINTER, TEMP_CODEWORD_POINTER ; zapamiêtaj ostatnio rozpoznany ci¹g
 	MOV eax, TEMP_CODE
 	MOV LAST_CODE, eax ; zapamiêtaj ostatnio rozpoznany kod
-	LOOP dataLoop
+
+	DEC ecx
+	JNZ dataLoop
 
 	; na koñcu wypisujemy kod zwi¹zany z ostatnio rozpoznanym symbolem i aktualizujemy rozmiar danych skompresowanych
 	MOV	eax, LAST_CODE

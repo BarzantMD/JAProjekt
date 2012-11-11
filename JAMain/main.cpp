@@ -7,9 +7,6 @@
 
 using namespace std;
 
-#define MAX_DICT_SIZE 65536 // maksymalny rozmiar s³ownika
-
-
 int main(int argc, char* argv[]) {
 // prototyp pracy wielu w¹tków
 /*
@@ -102,8 +99,8 @@ int main(int argc, char* argv[]) {
 		CompressParamsAsm params;
 		params.srcData = buffer; // wskaŸnik na dane do kompresji
 		params.srcDataSize = filesize; // rozmiar danych do skompresowania
-		params.dictData = new char[MAX_DICT_DATA_SIZE * 2];
-		params.dictSize = MAX_DICT_SIZE; // rozmiar s³ownika
+		params.dictData = new char[MAX_DICT_DATA_SIZE * 2 + 65536];
+		params.dictSize = MAX_DICT_DATA_SIZE; // rozmiar s³ownika
 		params.compressedData = new char[filesize*2 + 256]; // zaalokowanie pamiêci dla skompresowanych danych
 		params.alphabet = alphabet;
 		params.alphabetSize = alphabetSize;
@@ -202,7 +199,7 @@ int main(int argc, char* argv[]) {
 		CompressParams params;
 		params.srcData = buffer; // wskaŸnik na dane do kompresji
 		params.srcDataSize = filesize; // rozmiar danych do skompresowania
-		params.dictSize = MAX_DICT_SIZE; // rozmiar s³ownika
+		params.dictSize = MAX_DICT_DATA_SIZE; // rozmiar s³ownika
 		params.compressedData = new char[filesize*2 + 256]; // zaalokowanie pamiêci dla skompresowanych danych
 		params.alphabet = alphabet;
 		params.alphabetSize = alphabetSize;
