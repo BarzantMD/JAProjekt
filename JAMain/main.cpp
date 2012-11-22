@@ -5,6 +5,8 @@
 #include <string>
 #include <time.h>
 
+#define NUM_OF_CORES 2
+
 using namespace std;
 
 int main(int argc, char* argv[]) {
@@ -35,6 +37,19 @@ int main(int argc, char* argv[]) {
 	//return 0;
 
 	int c = parseCommand(argc, argv);
+
+	// ustalenie liczby w¹tków
+#ifndef NUM_OF_CORES
+	// jeœli nie zdefiniowano na sztywno liczby w¹tków, to wczytujemy iloœæ
+	// rdzeni komputera
+	SYSTEM_INFO sysinfo;
+	GetSystemInfo(&sysinfo);
+	int numberOfCores = sysinfo.dwNumberOfProcessors;
+#else
+	// liczba w¹tków na sztywno zdefiniowana
+	int numberOfCores = NUM_OF_CORES;
+#endif
+
 	
 /* ====================================== */
 /* Nieznane polecenie - wyœwietlenie odpowiedniego komunikatu */
@@ -78,7 +93,7 @@ int main(int argc, char* argv[]) {
 		// przygotowanie alfabetu
 		char* alphabet = new char[256]; // zarezerwowanie pamiêci dla alfabetu - max 256B
 
-		unsigned char alphabetSize = 0; // iloœæ znaków w alfabecie
+		int alphabetSize = 0; // iloœæ znaków w alfabecie
 		for (int i = 0; i < filesize; i++) { // przegl¹damy ca³e dane
 			bool isAlready = false; // czy jest ju¿ w s³owniku
 
@@ -130,7 +145,7 @@ int main(int argc, char* argv[]) {
 		fstream destFile;
 		destFile.open(destFilename.c_str(), ios::binary | ios::out | ios::trunc);
 		destFile.write((char*)(&params.blockCount), 2); // zapis iloœci bloków
-		destFile.write((char*)(&alphabetSize), 1); // zapis rozmiar alfabetu
+		destFile.write((char*)(&alphabetSize), 2); // zapis rozmiar alfabetu
 		destFile.write(alphabet, alphabetSize); // zapis alfabetu
 		destFile.write(params.compressedData, destSize);
 		destFile.close();
@@ -178,7 +193,7 @@ int main(int argc, char* argv[]) {
 		// przygotowanie alfabetu
 		char* alphabet = new char[256]; // zarezerwowanie pamiêci dla alfabetu - max 256B
 
-		unsigned char alphabetSize = 0; // iloœæ znaków w alfabecie
+		int alphabetSize = 0; // iloœæ znaków w alfabecie
 		for (int i = 0; i < filesize; i++) { // przegl¹damy ca³e dane
 			bool isAlready = false; // czy jest ju¿ w s³owniku
 
@@ -228,7 +243,7 @@ int main(int argc, char* argv[]) {
 		fstream destFile;
 		destFile.open(destFilename.c_str(), ios::binary | ios::out | ios::trunc);
 		destFile.write((char*)(&params.blockCount), 2); // zapis iloœci bloków
-		destFile.write((char*)(&alphabetSize), 1); // zapis rozmiar alfabetu
+		destFile.write((char*)(&alphabetSize), 2); // zapis rozmiar alfabetu
 		destFile.write(alphabet, alphabetSize); // zapis alfabetu
 		destFile.write(params.compressedData, destSize);
 		destFile.close();
@@ -276,19 +291,19 @@ int main(int argc, char* argv[]) {
 
 		// przygotowanie alfabetu
 		char* alphabet = new char[256]; // zarezerwowanie pamiêci dla alfabetu - max 256B
-		unsigned char alphabetSize = buffer[2]; // wczytujemy iloœæ znaków w alfabecie
-		memcpy(alphabet, &(buffer[3]), alphabetSize); // kopiujemy alfabet (od 3. bajtu licz¹c od zera)
+		int alphabetSize = ((short*)(buffer + 2))[0]; // wczytujemy iloœæ znaków w alfabecie
+		memcpy(alphabet, &(buffer[4]), alphabetSize); // kopiujemy alfabet (od 3. bajtu licz¹c od zera)
 
 		// przygotowanie parametrów i pamiêci dla procesu dekompresji
 		DecompressParams params;
-		params.compressedData = (buffer + 2 + 1 + alphabetSize); // wskaŸnik na dane do dekompresji (na pierwszy blok) (2 bajty iloœci bloków, 1 bajt rozmiaru alfabetu, odpowiednia iloœæ bajtów alfabetu)
-		params.decompressedData = new char[filesize*3]; // wstêpnie oszacowana pamiêæ na zdekompresowane dane
+		params.compressedData = (buffer + 2 + 2 + alphabetSize); // wskaŸnik na dane do dekompresji (na pierwszy blok) (2 bajty iloœci bloków, 2 bajt rozmiaru alfabetu, odpowiednia iloœæ bajtów alfabetu)
+		params.decompressedData = new char[102400000]; // wstêpnie oszacowana pamiêæ na zdekompresowane dane
 		params.alphabet = alphabet;
 		params.alphabetSize = alphabetSize;
 		params.blockCount = ((short*)(buffer))[0]; // iloœæ bloków danych
 
 		// realizacja w pojedynczym watku
-		HANDLE h;
+		/*HANDLE h;
 		DWORD threadID;
 		unsigned int start = clock();
 		h = CreateThread(NULL, 0, DecompressThread, &params, 0, &threadID);
@@ -296,7 +311,10 @@ int main(int argc, char* argv[]) {
 		unsigned int stop = clock();
 		double time = static_cast<double>(stop - start) / CLOCKS_PER_SEC;
 
-		cout << "Zakonczono watki" << endl;
+		cout << "Zakonczono watki" << endl;*/
+
+		DecompressThread(&params);
+
 		cout << "Czas dzialania: " << time << " sekund" << endl;
 		cout << "Rozmiar danych zdekompresowanych: " << params.decompressedDataSize << endl;
 
@@ -313,7 +331,7 @@ int main(int argc, char* argv[]) {
 		delete buffer;
 	}
 
-	system("pause");
+	//system("pause");
 	return 0;
 }
 

@@ -20,7 +20,7 @@ struct CompressParams {
 	unsigned short blockCount;
 	int dictSize; // rozmiar s³ownika
 	char* alphabet; // wskaŸnik na alfabet
-	unsigned char alphabetSize;  // liczba znaków w alfabecie
+	int alphabetSize;  // liczba znaków w alfabecie
 
 	CompressParams() :
 		srcData(NULL),
@@ -40,7 +40,7 @@ struct DecompressParams {
 	char* decompressedData; // miejsce na rozpakowane dane
 	int decompressedDataSize; // rozmiar danych po dekompresji
 	char* alphabet; // wskaŸnik na alfabet
-	unsigned char alphabetSize;  // liczba znaków w alfabecie
+	int alphabetSize;  // liczba znaków w alfabecie
 	unsigned short blockCount; // iloœæ bloków w danych do dekompresji
 
 	DecompressParams() :
@@ -57,6 +57,10 @@ struct DecompressParams {
 struct Element {
 	char* value;
 	int size; // ile bajtów ma value
+
+	//DEBUG
+	int number; // numer s³owa kodowegos
+
 	Element* next;
 
 	Element(char* pWord, int length) {
@@ -88,18 +92,24 @@ public:
 
 	// zwolnienie zasobów
 	~Dictionary() {
-		if(head == NULL) return;
+		//if(head == NULL) return;
 		Element* tmp = head;
-		while(tmp->next != NULL) {
+		/*while(tmp->next != NULL) {
 			Element* tmp_prev = tmp;
 			tmp = tmp->next;
 			delete tmp_prev;
+		}*/
+		//delete tmp;
+
+		while(tmp != NULL) {
+			Element* toDelete = tmp;
+			tmp = tmp->next;
+			delete toDelete;
 		}
-		delete tmp;
 	}
 
 	// inicjalizacja s³ownika alfabetem
-	void initAlphabet(char* alphabetArray, unsigned char alphabetSize) {
+	void initAlphabet(char* alphabetArray, int alphabetSize) {
 		for (int i = 0; i < alphabetSize; i++) {
 			addCodeword(&(alphabetArray[i]), 1);
 		}
@@ -109,6 +119,10 @@ public:
 	int addCodeword(char* pWord, int length) {
 		if(head == NULL) {
 			head = new Element(pWord, length);
+
+			//DEBUG
+			head->number = count;
+
 			tail = head;
 			count++;
 			size += length;
@@ -117,6 +131,10 @@ public:
 
 		tail->next = new Element(pWord, length);
 		tail = tail->next;
+
+		//DEBUG
+		tail->number = count;
+
 		count++;
 		size += length;
 		return count - 1; // zwraca kod nowego s³owa w s³owniku

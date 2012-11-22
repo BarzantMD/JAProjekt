@@ -36,23 +36,39 @@ TEMP_CODE DD 0 ; tymczasowy kod rozpozanego ci¹gu
 ; len - d³ugoœæ s³owa kodowego
 ; ============================================================================;
 dictAddCodeword PROC codeword: DWORD, len: WORD
-	PUSHAD ; zachowanie rejestrów
+	; zachowanie rejestrów
+	PUSHAD
 
+	; ustawienie licznika (d³ugoœæ s³owa kodowego)
 	MOV ecx, 0
 	MOV cx, len
-	ADD DICT_CUR_SIZE, ecx ; zwiêkszenie rozmiaru s³ownika
-	ADD DICT_COUNT, 1 ; zwiêkszenie liczby elementów w s³owniku
 
-	MOV esi, codeword ; ustalamy Ÿród³owy adres odczytu danych
-	MOV edi, DICT_END_POINTER ; ustawiamy docelowy adres zapisu danych
-	MOV [edi], cx ; zapisanie d³ugoœci s³owa kodowego
-	ADD edi, 2 ; ustawienie siê na miejsce zapisu s³owa kodowego
+	; zwiêkszenie rozmiaru s³ownika
+	ADD DICT_CUR_SIZE, ecx
+
+	; zwiêkszenie liczby elementów w s³owniku
+	ADD DICT_COUNT, 1
+
+	; ustalamy Ÿród³owy adres odczytu danych
+	MOV esi, codeword
+
+	; ustawiamy docelowy adres zapisu danych
+	MOV edi, DICT_END_POINTER 
+
+	; zapisanie d³ugoœci s³owa kodowego
+	MOV [edi], cx 
+
+	; ustawienie siê na miejsce zapisu s³owa kodowego
+	ADD edi, 2 
 	CLD
-	REP MOVSB ; skopiowanie s³owa kodowego do s³ownika
+	; skopiowanie s³owa kodowego do s³ownika
+	REP MOVSB 
 
-	MOV DICT_END_POINTER, edi ; ustalenie nowego koñca s³ownika
+	; ustalenie nowego koñca s³ownika
+	MOV DICT_END_POINTER, edi 
 
-	POPAD ; odtworzenie rejestrów
+	; odtworzenie rejestrów
+	POPAD
 	RET
 dictAddCodeword ENDP
 
@@ -62,11 +78,14 @@ dictAddCodeword ENDP
 dictInitAlphabet PROC
 	; zachowanie rejestrów
 	PUSHAD
-	MOV ecx, [ebx + 32] ; odczytanie iloœci znaków w alfabecie
-	MOV esi, [ebx + 28] ; wskaŸnik na alfabet
+	; odczytanie iloœci znaków w alfabecie
+	MOV ecx, [ebx + 32] 
+	; wskaŸnik na alfabet
+	MOV esi, [ebx + 28] 
 
 alphabetLoop:
-	INVOKE dictAddCodeword, esi, 1 ; dodaj pojedynczy znak alfabetu do s³ownika
+	; dodaj pojedynczy znak alfabetu do s³ownika
+	INVOKE dictAddCodeword, esi, 1 
 	ADD esi, 1
 	LOOP alphabetLoop
 
@@ -78,10 +97,15 @@ dictInitAlphabet ENDP
 ; Procedura inicjuj¹ca zmienne DICT_POINTER oraz DICT_END_POINTER
 ; ============================================================================;
 dictInit PROC
-	MOV eax, [ebx + 20] ; ustawiamy wskaŸnik na miejsce dla s³ownika
+	; ustawiamy wskaŸnik na miejsce dla s³ownika
+	MOV eax, [ebx + 20] 
 	MOV DICT_POINTER, eax
-	MOV DICT_END_POINTER, eax ; pierwszym wolnym bajtem jest pocz¹tek
-	MOV eax, [ebx + 24] ; ustawiamy maksymalny rozmiar danych w s³owniku
+
+	; pierwszym wolnym bajtem jest pocz¹tek
+	MOV DICT_END_POINTER, eax 
+
+	; ustawiamy maksymalny rozmiar danych w s³owniku
+	MOV eax, [ebx + 24] 
 	MOV DICT_MAX_SIZE, eax
 	MOV DICT_CUR_SIZE, 0
 	MOV DICT_COUNT, 0
@@ -99,44 +123,67 @@ dictGetCodewordId PROC
 	PUSHAD
 
 	MOV edi, DICT_POINTER
-	MOV ebx, 0 ; aktualny numer (kod) elementu w s³owniku
-	MOV ecx, 0 ; zerujemy ecx - bêdzie s³u¿y³ za d³ugoœæ aktualnego elementu w s³owniku (jego dolne 2 bajty)
+
+	; aktualny numer (kod) elementu w s³owniku
+	MOV ebx, 0 
+
+	; zerujemy ecx - bêdzie s³u¿y³ za d³ugoœæ aktualnego elementu w s³owniku (jego dolne 2 bajty)
+	MOV ecx, 0 
 	
 	; pêtla przeszukiwania kolejnych elementów s³ownika
 	CLD
 searchLoop:
-	MOV eax, edi ; zapamiêtanie adresu na wypadek znalezienia
-	MOV cx, [edi] ; pobieramy d³ugoœæ elementu
+	; zapamiêtanie adresu na wypadek znalezienia
+	MOV eax, edi 
+
+	; pobieramy d³ugoœæ elementu
+	MOV cx, [edi] 
 	ADD edi, 2
-	CMP ecx, edx ; sprawdzamy, czy d³ugoœci s¹ równe
-	JNE skip ; nie ma sensu porównywaæ ci¹gów o ró¿nych d³ugoœciach - przeskoczenie do kolejnego elementu
+
+	; sprawdzamy, czy d³ugoœci s¹ równe
+	CMP ecx, edx 
+
+	; nie ma sensu porównywaæ ci¹gów o ró¿nych d³ugoœciach - przeskoczenie do kolejnego elementu
+	JNE skip 
+
+	; zapamiêtanie adresu Ÿród³owego do kolejnego porównania (z kolejnym elementem)
+	PUSH esi 
 
 	;pêtla porównania danego elementu
-	PUSH esi ; zapamiêtanie adresu Ÿród³owego do kolejnego porównania (z kolejnym elementem)
 cmpLoop:
 	CMPSB
 	LOOPE cmpLoop
-	POP esi ; przywrócenie pierwotnego esi dla porównania z kolejnym elementem
-	JE equal ; jeœli ca³y ci¹g siê zgadza
+	; przywrócenie pierwotnego esi dla porównania z kolejnym elementem
+	POP esi 
+	; jeœli ca³y ci¹g siê zgadza
+	JE equal 
 
-skip: ; pominiêcie nieporównanych bajtów
-	ADD edi, ecx ; przesuniêcie edi o d³ugoœæ nieporównanych danych (lub nawet o ca³y element)
+skip:
+	; pominiêcie nieporównanych bajtów
+	; przesuniêcie edi o d³ugoœæ nieporównanych danych (lub nawet o ca³y element)
+	ADD edi, ecx
 next:
-	ADD ebx, 1 ; przechodzimy do kolejnego elementu
-	CMP ebx, DICT_COUNT ; sprawdzamy czy nie przeszukaliœmy ju¿ wszystkich elementów w s³owniku
+	; przechodzimy do kolejnego elementu
+	ADD ebx, 1
+	; sprawdzamy czy nie przeszukaliœmy ju¿ wszystkich elementów w s³owniku
+	CMP ebx, DICT_COUNT 
 	JNZ searchLoop
 
 	; jeœli nie znaleziono elementu w s³owniku
-	MOV TEMP_CODEWORD_POINTER, 0 ; zwrócenie zerowego wskaŸnika (nie znaleziono elementu)
+	; zwrócenie zerowego wskaŸnika (nie znaleziono elementu)
+	MOV TEMP_CODEWORD_POINTER, 0 
 	JMP exit
 
 equal:
-	MOV TEMP_CODEWORD_POINTER, eax ; w eax zapamiêtano adres na wypadek znalezienia ci¹gu
-	MOV TEMP_CODE, ebx ; ebx wskazuje na kod znalezionego ci¹gu
+	; w eax zapamiêtano adres na wypadek znalezienia ci¹gu
+	MOV TEMP_CODEWORD_POINTER, eax
+	; ebx wskazuje na kod znalezionego ci¹gu
+	MOV TEMP_CODE, ebx 
 
 exit:
 	POPAD
-	MOV eax, TEMP_CODEWORD_POINTER ; dodatkowe zwrócenie wskaŸnika przez eax
+	; dodatkowe zwrócenie wskaŸnika przez eax
+	MOV eax, TEMP_CODEWORD_POINTER 
 	RET
 dictGetCodewordId ENDP
 
@@ -151,57 +198,85 @@ dictGetCodewordId ENDP
 ; edx - d³ugoœæ aktualnie analizowanego ci¹gu
 ; ============================================================================;
 CompressThreadAsm PROC params: DWORD
-	MOV ebx, params ; ebx dla kolejnych dwóch procedur bêdzie wskazywa³ strukturê params
-	INVOKE dictInit ; inicjalizacja zmiennych s³ownika
-	INVOKE dictInitAlphabet ; inicjalizacja s³ownika alfabetem
+	; ebx dla kolejnych dwóch procedur bêdzie wskazywa³ strukturê params
+	MOV ebx, params 
 
-	MOV esi, [ebx + 0] ; adres danych wejœciowych
-	MOV ecx, [ebx + 4] ; rozmiar danych wejœciowych (iloœæ bajtów)
-	MOV edi, [ebx + 8] ; adres danych wyjœciowych (skompresowanych)
+	; inicjalizacja zmiennych s³ownika
+	INVOKE dictInit 
+	; inicjalizacja s³ownika alfabetem
+	INVOKE dictInitAlphabet 
+
+	; adres danych wejœciowych
+	MOV esi, [ebx + 0] 
+
+	; rozmiar danych wejœciowych (iloœæ bajtów)
+	MOV ecx, [ebx + 4] 
+
+	; adres danych wyjœciowych (skompresowanych)
+	MOV edi, [ebx + 8] 
 	MOV CUR_BLOCK_POINTER, edi
-	ADD edi, 4 ; 4 bajty rezerwujemy na rozmiar bloku
-	MOV edx, 0 ; pocz¹tkowa iloœæ wczytanych znaków - 0
+
+	; 4 bajty rezerwujemy na rozmiar bloku
+	ADD edi, 4 
+
+	; pocz¹tkowa iloœæ wczytanych znaków - 0
+	MOV edx, 0 
 
 	; g³ówna pêtla wczytuj¹ca kolejne znaki ze Ÿród³a
 dataLoop:
-	ADD edx, 1 ; wczytaj kolejny znak
-	INVOKE dictGetCodewordId ; sprawdzamy czy jest ci¹g w s³owniku - przekazanie argumentów przez esi oraz edx
-	CMP eax, 0 ; sprawdzamy czy jest w s³owniku
-	JNZ next ; je¿eli ci¹g jest w s³owniku
+	; wczytaj kolejny znak
+	ADD edx, 1 
+	; sprawdzamy czy jest ci¹g w s³owniku - przekazanie argumentów przez esi oraz edx
+	INVOKE dictGetCodewordId 
+	; sprawdzamy czy jest w s³owniku
+	CMP eax, 0 
+	; je¿eli ci¹g jest w s³owniku
+	JNZ next 
 
 	; ci¹gu nie ma w s³owniku
 
 	; 1 wypisz kod zwi¹zany z c i zaktualizuj rozmiar danych skompresowanych
 	MOV	eax, LAST_CODE
 	MOV [edi], ax
-	ADD edi, 2 ; przesuwamy siê o 2 bajty, na kolejn¹ pozycjê do zapisu kodu
+
+	; przesuwamy siê o 2 bajty, na kolejn¹ pozycjê do zapisu kodu
+	ADD edi, 2 
 	ADD COMPRESSED_DATA_SIZE, 1
 
 	; 2 dodaj przed³u¿ony ostatnio nierozpoznany ci¹g do s³ownika
 	INVOKE dictAddCodeword, esi, dx
 
 	; 3 prefiksem do kolejnego ci¹gu, jest ostatni znak z dodanego ci¹gu do s³ownika
-	ADD esi, edx ; dodajemy d³ugoœæ ostatniego ci¹gu
-	SUB esi, 1 ; cofamy siê o jeden znak
-	MOV edx, 1 ; ustawiamy d³ugoœæ nowego analizowanego ci¹gu na 1
+	; dodajemy d³ugoœæ ostatniego ci¹gu
+	ADD esi, edx 
+	; cofamy siê o jeden znak
+	SUB esi, 1 
+	; ustawiamy d³ugoœæ nowego analizowanego ci¹gu na 1
+	MOV edx, 1 
 
 	; analiza czy s³ownik osi¹gn¹³ limit rozmiaru (DICT_MAX_SIZE)
 	MOV eax, DICT_CUR_SIZE
 	CMP DICT_MAX_SIZE, eax
-	JG ok ; rozmiar jeszcze nie przekroczy³
+	; rozmiar jeszcze nie przekroczy³
+	JG ok 
 
 	; analiza czy s³ownik osi¹gn¹³ limit elementów (na sztywno ustawiony na 65536 elementów)
 	CMP DICT_COUNT, 65536
-	JG ok ; nie osi¹gn¹³ limitu elementów
+	; nie osi¹gn¹³ limitu elementów
+	JG ok 
 
 	; s³ownik osi¹gn¹³ limit, trzeba wyczyœciæ, utworzyæ nowy, i rozpocz¹æ nowy blok
 	; 1. inicjalizacja nowego s³ownika
-	MOV ebx, params ; ebx dla kolejnych dwóch procedur bêdzie wskazywa³ strukturê params
-	INVOKE dictInit ; inicjalizacja zmiennych s³ownika
-	INVOKE dictInitAlphabet ; inicjalizacja s³ownika alfabetem
+	; ebx dla kolejnych dwóch procedur bêdzie wskazywa³ strukturê params
+	MOV ebx, params 
+	; inicjalizacja zmiennych s³ownika
+	INVOKE dictInit 
+	; inicjalizacja s³ownika alfabetem
+	INVOKE dictInitAlphabet 
 
 	; 2. zapisanie rozmiaru bloku, dodanie do sumarycznego rozmiaru
-	MOV ebx, CUR_BLOCK_POINTER ; pobranie adresu pocz¹tku bloku
+	; pobranie adresu pocz¹tku bloku
+	MOV ebx, CUR_BLOCK_POINTER 
 	MOV eax, COMPRESSED_DATA_SIZE
 	MOV [ebx], eax
 	ADD SUMMARY_COMPRESSED_DATA_SIZE, eax
@@ -210,22 +285,30 @@ dataLoop:
 	ADD BLOCK_COUNT, 1
 	
 	; 4. ustawienie nowego bloku
-	ADD eax, eax ; otrzymanie iloœci bajtów danych skompresowanych
-	ADD eax, 4 ; dodanie 4 bajtów rozmiaru z pocz¹tku bloku
-	ADD CUR_BLOCK_POINTER, eax ; ustalenie nowego pocz¹tku bloku
-	MOV edi, CUR_BLOCK_POINTER ; nowe miejsce zapisu kodów
-	ADD edi, 4 ; zarezerwowanie 4 bajtów na rozmiar nowego bloku
-	MOV COMPRESSED_DATA_SIZE, 0 ; wyzerowanie aktualnego rozmiaru danych skompresowanych
+	; otrzymanie iloœci bajtów danych skompresowanych
+	ADD eax, eax 
+	; dodanie 4 bajtów rozmiaru z pocz¹tku bloku
+	ADD eax, 4 
+	; ustalenie nowego pocz¹tku bloku
+	ADD CUR_BLOCK_POINTER, eax 
+	; nowe miejsce zapisu kodów
+	MOV edi, CUR_BLOCK_POINTER 
+	; zarezerwowanie 4 bajtów na rozmiar nowego bloku
+	ADD edi, 4 
+	; wyzerowanie aktualnego rozmiaru danych skompresowanych
+	MOV COMPRESSED_DATA_SIZE, 0 
 
 ok:
 	; aktualizujemy ostatnio rozpoznany ci¹g
-	INVOKE dictGetCodewordId ; musi byæ w s³owniku, poniewa¿ jest to pojedynczy znak alfabetu
+	; musi byæ w s³owniku, poniewa¿ jest to pojedynczy znak alfabetu
+	INVOKE dictGetCodewordId 
 	;MOV LAST_CODEWORD_POINTER, TEMP_CODEWORD_POINTER
 
 next:
 	;MOV LAST_CODEWORD_POINTER, TEMP_CODEWORD_POINTER ; zapamiêtaj ostatnio rozpoznany ci¹g
 	MOV eax, TEMP_CODE
-	MOV LAST_CODE, eax ; zapamiêtaj ostatnio rozpoznany kod
+	; zapamiêtaj ostatnio rozpoznany kod
+	MOV LAST_CODE, eax 
 
 	DEC ecx
 	JNZ dataLoop

@@ -7,15 +7,20 @@
 using namespace std;
 
 DWORD WINAPI CompressThread (LPVOID lpParameter) {
-	CompressParams* pParams = (CompressParams*) lpParameter; // Uzyskanie struktury z parametrami.
+	// Uzyskanie struktury z parametrami.
+	CompressParams* pParams = (CompressParams*) lpParameter; 
 	
-	char* srcDataPointer = pParams->srcData; // wskaŸnik na dane do skompresowania
-	char* compressedDataPointer = pParams->compressedData; // wskaŸnik na miejsce w pamiêci, gdzie bêdzie zaczynaæ siê blok
-	char* alphabetPointer = pParams->alphabet; // wskaŸnik na alfabet
-	unsigned char alphabetSize = pParams->alphabetSize; // rozmiar alfabetu
+	// wskaŸnik na dane do skompresowania
+	char* srcDataPointer = pParams->srcData;
+	// wskaŸnik na miejsce w pamiêci, gdzie bêdzie zaczynaæ siê blok
+	char* compressedDataPointer = pParams->compressedData; 
+	// wskaŸnik na alfabet
+	char* alphabetPointer = pParams->alphabet;
+	// rozmiar alfabetu
+	int alphabetSize = pParams->alphabetSize; 
 
 	//// analiza alfabetu
-	//unsigned char alphabetSize = 0; // iloœæ znaków w alfabecie
+	//int alphabetSize = 0; // iloœæ znaków w alfabecie
 	//for (int i = 0; i < pParams->srcDataSize; i++) { // przegl¹damy ca³e dane
 	//	bool isAlready = false; // czy jest ju¿ w s³owniku
 
@@ -116,9 +121,9 @@ DWORD WINAPI DecompressThread (LPVOID lpParameter) {
 	//unsigned short blockCount = ((short*)compressedDataPointer)[0]; // odczytujemy iloœæ bloków
 	unsigned short blockCount = pParams->blockCount;
 	//compressedDataPointer += 2; // przesuwamy siê za iloœæ bloków (dwa bajty w przód - jeden short)
-	//unsigned char alphabetSize = compressedDataPointer[4]; // iloœæ znaków w alfabecie (zapisana na 4. bajcie numeruj¹c od 0)
+	//int alphabetSize = compressedDataPointer[4]; // iloœæ znaków w alfabecie (zapisana na 4. bajcie numeruj¹c od 0)
 	//char* alphabetPointer = compressedDataPointer + 5; // alfabet zaczyna siê od 5. bajtu numeruj¹c od 0
-	unsigned char alphabetSize = pParams->alphabetSize; // iloœæ znaków w alfabecie
+	int alphabetSize = pParams->alphabetSize; // iloœæ znaków w alfabecie
 	char* alphabetPointer = pParams->alphabet; // wskaŸnik na alfabet
 	//short* compressedCodePointer = (short*)(alphabetPointer + alphabetSize); // wskaŸnik na kody skompresowanych danych pierwszego bloku
 	//short* compressedCodePointer = (short*)(compressedDataPointer + 4); // wskaŸnik na kody skompresowanych danych 1. bloku (za rozmiarem bloku)
@@ -149,13 +154,13 @@ DWORD WINAPI DecompressThread (LPVOID lpParameter) {
 			Element* prev = tmp; // ci¹g skojarzony z poprzednim kodem
 			tmp = dict.getElementById(k); // próba pobrania ciagu o id=k
 			if(tmp != NULL) { // znaleziono kod
-				char* newCodeword = new char[prev->size + 1]; // nowe s³owo kodowe to poprzednie s³owo kodowe + pierwszy znak kolejnego s³owa kodowego
-				memcpy(newCodeword, prev->value, prev->size); // poprzednie s³owo kodowe +
-				newCodeword[prev->size] = tmp->value[0]; // pierwszy znak kolejnego s³owa kodowego
-				dict.addCodeword(newCodeword, prev->size + 1); // dodanie nowego s³owa kodowego do s³ownika
-				memcpy(out, tmp->value, tmp->size); // wypisujemy s³ownik[k] na wyjœcie
-				out += tmp->size; // przesuwamy wskaŸnik o odpowiedni¹ iloœæ znaków do przodu
-				decompressedDataSize += tmp->size; // zwiêkszamy iloœæ danych zdekompresowanych
+				char* newCodeword = new char[prev->size + 1];	// nowe s³owo kodowe to poprzednie s³owo kodowe + pierwszy znak kolejnego s³owa kodowego
+				memcpy(newCodeword, prev->value, prev->size);	// poprzednie s³owo kodowe +
+				newCodeword[prev->size] = tmp->value[0];		// pierwszy znak kolejnego s³owa kodowego
+				dict.addCodeword(newCodeword, prev->size + 1);	// dodanie nowego s³owa kodowego do s³ownika
+				memcpy(out, tmp->value, tmp->size);				// wypisujemy s³ownik[k] na wyjœcie
+				out += tmp->size;								// przesuwamy wskaŸnik o odpowiedni¹ iloœæ znaków do przodu
+				decompressedDataSize += tmp->size;				// zwiêkszamy iloœæ danych zdekompresowanych
 			}
 			else { // w przeciwnym wypadku (jeœli nie ma s³owa kodowego o takim kodzie w s³owniku)
 				char* newCodeword = new char[prev->size + 1]; // nowe s³owo kodowe to poprzednie s³owo kodowe + pierwszy znak poprzedniego s³owa kodowego

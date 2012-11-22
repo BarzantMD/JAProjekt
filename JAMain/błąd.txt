@@ -1,0 +1,5 @@
+Przebieg pêtli (dekompresja) przed przebieg gdzie wystêpuje b³¹d.
+
+Dla i=220 s³ownik jest uszkodzony (ju¿ jego 3 element next wskazuje na wartoœæ nie do odczytania)
+
+Dla i=219 jeszcze s³ownik jest wporz¹dku. S³ownik ma 250 elementów, od 0 do 249. Odczytywany zostaje kod 250, którego nie ma w s³owniku.
