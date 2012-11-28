@@ -10,6 +10,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JADLL", "JADLL\JADLL.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test", "Test\Test.vcxproj", "{02EA5213-2447-44F0-AA74-34CDB8F1A785}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test2", "Test2\Test2.vcxproj", "{11800376-439E-410B-8CDA-2381EC3C36BA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -28,6 +30,10 @@ Global
 		{02EA5213-2447-44F0-AA74-34CDB8F1A785}.Debug|Win32.Build.0 = Debug|Win32
 		{02EA5213-2447-44F0-AA74-34CDB8F1A785}.Release|Win32.ActiveCfg = Release|Win32
 		{02EA5213-2447-44F0-AA74-34CDB8F1A785}.Release|Win32.Build.0 = Release|Win32
+		{11800376-439E-410B-8CDA-2381EC3C36BA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{11800376-439E-410B-8CDA-2381EC3C36BA}.Debug|Win32.Build.0 = Debug|Win32
+		{11800376-439E-410B-8CDA-2381EC3C36BA}.Release|Win32.ActiveCfg = Release|Win32
+		{11800376-439E-410B-8CDA-2381EC3C36BA}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

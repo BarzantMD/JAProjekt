@@ -19,27 +19,6 @@ DWORD WINAPI CompressThread (LPVOID lpParameter) {
 	// rozmiar alfabetu
 	int alphabetSize = pParams->alphabetSize; 
 
-	//// analiza alfabetu
-	//int alphabetSize = 0; // iloœæ znaków w alfabecie
-	//for (int i = 0; i < pParams->srcDataSize; i++) { // przegl¹damy ca³e dane
-	//	bool isAlready = false; // czy jest ju¿ w s³owniku
-
-	//	for (int j = 0; j < alphabetSize; j++) { // pêtla porównuj¹ca znak z pêtli wy¿ej z ka¿dym znakiem z dotychczasowego alfabetu
-	//		if(alphabetPointer[j] == srcDataPointer[i]) {
-	//			isAlready = true; // znak wystêpuje ju¿ w alfabecie
-	//			break;
-	//		}
-	//	}
-
-	//	if(!isAlready) {
-	//			alphabetPointer[alphabetSize] = srcDataPointer[i]; // dodajemy nowy znak do alfabetu
-	//			alphabetSize++;
-	//		}
-	//}
-
-	//compressedDataPointer[4] = alphabetSize; // zapisanie na 4. bajt iloœci znaków w alfabecie
-	//cout << "Rozmiar alfabetu: " << (int)alphabetSize << endl;
-
 	// dodanie alfabetu do s³ownika
 	Dictionary* dict = new Dictionary;
 	dict->initAlphabet(alphabetPointer, alphabetSize);
@@ -71,11 +50,12 @@ DWORD WINAPI CompressThread (LPVOID lpParameter) {
 			codewordLength = 1;
 
 			//sprawdzenie czy s³ownik osi¹gn¹³ limit
-			if(dict->getSize() >= MAX_DICT_DATA_SIZE || dict->getCount() >= 65536) { // ograniczenie rozmiaru b¹dŸ iloœci wpisów
+			if(dict->getSize() >= MAX_DICT_DATA_SIZE || dict->getCount() >= 16384) { // ograniczenie rozmiaru b¹dŸ iloœci wpisów
 				cout << "Rozmiar bloku: " << compressedDataSize << endl;
 
 				summaryCompressedDataSize += compressedDataSize;
 				cout << "Przetworzonych danych: " << summaryCompressedDataSize * 2 << "B" << endl;
+				cout << "Liczba wpisow w slowniku: " << dict->getCount() << endl;
 				cout << "Tworzenie nowego slownika" << endl;
 				delete dict; // usuwamy dotychczasowy s³ownik
 				dict = new Dictionary; // tworzymy nowy s³ownik

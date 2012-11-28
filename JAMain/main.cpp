@@ -4,37 +4,24 @@
 #include <fstream>
 #include <string>
 #include <time.h>
+#include <sstream>
 
-#define NUM_OF_CORES 2
+//#define NUM_OF_CORES 4
+
+int threadCount = 0;
 
 using namespace std;
 
 int main(int argc, char* argv[]) {
-// prototyp pracy wielu w¹tków
-/*
-	int threadCount = 1; // default thread count
+	// testowy kod tymczasowy
+	int temp = TestProc(3);
+	cout << "Zwrocono: " << temp << endl;
 
-	DWORD* threadIDArray = new DWORD[threadCount];
-	HANDLE* handleArray = new HANDLE[threadCount];
+	system("pause");
+	return 0;
 
-	for(int i = 0; i < threadCount; ++i) {
-		handleArray[i] = CreateThread(NULL, 0, CompressThread, &params, 0, &threadIDArray[i]);
-	}
 
-	WaitForMultipleObjects(threadCount, handleArray, TRUE, INFINITE);
-	
-	for(int i = 0; i < threadCount; ++i) {
-		CloseHandle(handleArray[i]);
-	}
-	cout << "Zakonczono program" << endl;
-	cout << "ID watkow: " << endl;
-	for (int i = 0; i < threadCount; i++) {
-		cout << threadIDArray[i] << endl;
-	}
-*/
 
-	//system("pause");
-	//return 0;
 
 	int c = parseCommand(argc, argv);
 
@@ -42,12 +29,14 @@ int main(int argc, char* argv[]) {
 #ifndef NUM_OF_CORES
 	// jeœli nie zdefiniowano na sztywno liczby w¹tków, to wczytujemy iloœæ
 	// rdzeni komputera
-	SYSTEM_INFO sysinfo;
-	GetSystemInfo(&sysinfo);
-	int numberOfCores = sysinfo.dwNumberOfProcessors;
+	if(threadCount == 0) {
+		SYSTEM_INFO sysinfo;
+		GetSystemInfo(&sysinfo);
+		threadCount = sysinfo.dwNumberOfProcessors;
+	}
 #else
 	// liczba w¹tków na sztywno zdefiniowana
-	int numberOfCores = NUM_OF_CORES;
+	threadCount = NUM_OF_CORES;
 #endif
 
 	
@@ -65,7 +54,7 @@ int main(int argc, char* argv[]) {
 		string srcFilename = argv[2];
 		string destFilename;
 		if(argc == 3)
-			destFilename = srcFilename + ".packed";
+			destFilename = srcFilename + ".asmpacked";
 		else
 			destFilename = argv[3];
 
@@ -110,56 +99,143 @@ int main(int argc, char* argv[]) {
 				}
 		}
 
-		// przygotowanie parametrów i pamiêci dla procesu kompresji
-		CompressParamsAsm params;
-		params.srcData = buffer; // wskaŸnik na dane do kompresji
-		params.srcDataSize = filesize; // rozmiar danych do skompresowania
-		params.dictData = new char[MAX_DICT_DATA_SIZE * 2 + 65536];
-		params.dictSize = MAX_DICT_DATA_SIZE; // rozmiar s³ownika
-		params.compressedData = new char[filesize*2 + 256]; // zaalokowanie pamiêci dla skompresowanych danych
-		params.alphabet = alphabet;
-		params.alphabetSize = alphabetSize;
+		// przygotowanie danych dla w¹tków
+		DWORD* threadIDArray = new DWORD[threadCount];
+		HANDLE* handleArray = new HANDLE[threadCount];
 
-		// realizacja w pojedynczym watku
-		HANDLE h;
-		DWORD threadID;
+		CompressParamsAsm* paramsArray = new CompressParamsAsm[threadCount];
+
+		// rozmiar danych dla w¹tków (oprócz ostatniego)
+		int dataSizePerThread = filesize / threadCount;
+		// rozmiar danych dla ostatniego w¹tku (reszta danych)
+		// ca³kowity rozmiar danych minus rozmiar danych dla poprzednich w¹tków
+		int restDataSize = filesize - (dataSizePerThread * (threadCount - 1));
+
+		for (int i = 0; i < threadCount; i++) {
+			paramsArray[i].alphabet = alphabet;
+			paramsArray[i].alphabetSize = alphabetSize;
+			paramsArray[i].dictSize = MAX_DICT_DATA_SIZE;
+			paramsArray[i].dictData = new char[MAX_DICT_DATA_SIZE * 2 + 65536];
+			paramsArray[i].srcData = &(buffer[i * dataSizePerThread]);
+			paramsArray[i].compressedData = new char[dataSizePerThread * 2];
+			
+			if(i == (threadCount - 1)) {
+				// parametry dla ostatniego w¹tku
+				paramsArray[i].srcDataSize = restDataSize;
+			}
+			else {
+				// parametry dla wszystkich w¹tków oprócz ostatniego
+				paramsArray[i].srcDataSize = dataSizePerThread;
+			}
+		}
+
+
+		// uruchomienie w¹tków
 		unsigned int start = clock();
-		h = CreateThread(NULL, 0, CompressThreadAsm, &params, 0, &threadID);
-		WaitForSingleObject(h, INFINITE);
-		unsigned int stop = clock();
-		double time = static_cast<double>(stop - start) / CLOCKS_PER_SEC;
+
+		CompressThreadAsm(&paramsArray[0]);
+
+		//for(int i = 0; i < threadCount; ++i) {
+		//	handleArray[i] = CreateThread(NULL, 0, CompressThreadAsm, &paramsArray[i], 0, &threadIDArray[i]);
+		//}
+
+		//WaitForMultipleObjects(threadCount, handleArray, TRUE, INFINITE);
+		//unsigned int stop = clock();
+		//double time = static_cast<double>(stop - start) / CLOCKS_PER_SEC;
+
+		//// zamkniêcie uchwytów do w¹tków
+		//for(int i = 0; i < threadCount; ++i) {
+		//	CloseHandle(handleArray[i]);
+		//}
+
+		// podliczenie sumarycznych danych skompresowanych oraz ka¿dego w¹tku
+		int summaryCompressedDataSize = 0;
+		int summaryBlockCount = 0;
+		cout << "Dane skompresowane przez kazdy watek:" << endl;
+		for (int i = 0; i < threadCount; i++) {
+			cout << "Dane - watek " << i << ": " << paramsArray[i].compressedDataSize << endl;
+			cout << "Bloki - watek " << i << ": " << paramsArray[i].blockCount << endl;
+			summaryCompressedDataSize += paramsArray[i].compressedDataSize;
+			summaryBlockCount += paramsArray[i].blockCount;
+		}
 
 		cout << "Zakonczono watki" << endl;
 		cout << "Czas dzialania: " << time << " sekund" << endl;
-		cout << "Rozmiar danych skompresowanych: " << params.compressedDataSize * 2 << endl;
-		cout << "Ilosc blokow: " << params.blockCount << endl;
-
-
-		// zapis do pliku:
-
-		// wyliczenie rozmiaru danych do zapisu
-		// rozmiar danych (iloœæ kodów * 2 bajty) + 4 bajty na ka¿dy blok
-		int destSize = (int)(params.compressedDataSize * 2 + params.blockCount * 4);
 
 		// otwarcie i w³aœciwy zapis do pliku
 		fstream destFile;
 		destFile.open(destFilename.c_str(), ios::binary | ios::out | ios::trunc);
-		destFile.write((char*)(&params.blockCount), 2); // zapis iloœci bloków
+		destFile.write((char*)(&summaryBlockCount), 2); // zapis iloœci bloków
 		destFile.write((char*)(&alphabetSize), 2); // zapis rozmiar alfabetu
 		destFile.write(alphabet, alphabetSize); // zapis alfabetu
-		destFile.write(params.compressedData, destSize);
+		/*destFile.write(params.compressedData, destSize);*/
+		// zapis danych z poszczególnych w¹tków
+		for (int i = 0; i < threadCount; i++) {
+			// wyliczenie rozmiaru danych do zapisu
+			// rozmiar danych (iloœæ kodów * 2 bajty) + 4 bajty na ka¿dy blok
+			int destSize = (int)(paramsArray[i].compressedDataSize * 2 + paramsArray[i].blockCount * 4);
+			destFile.write(paramsArray[i].compressedData, destSize);
+		}
+
 		destFile.close();
 
 		// zwolnienie zasobów
-		delete params.compressedData;
+		for (int i = 0; i < threadCount; i++) {
+			delete paramsArray[i].compressedData;
+			delete paramsArray[i].dictData;
+		}
 		delete buffer;
-		delete params.dictData;
+
+		//// przygotowanie parametrów i pamiêci dla procesu kompresji
+		//CompressParamsAsm params;
+		//params.srcData = buffer; // wskaŸnik na dane do kompresji
+		//params.srcDataSize = filesize; // rozmiar danych do skompresowania
+		//params.dictData = new char[MAX_DICT_DATA_SIZE * 2 + 65536];
+		//params.dictSize = MAX_DICT_DATA_SIZE; // rozmiar s³ownika
+		//params.compressedData = new char[filesize*2 + 256]; // zaalokowanie pamiêci dla skompresowanych danych
+		//params.alphabet = alphabet;
+		//params.alphabetSize = alphabetSize;
+
+		//// realizacja w pojedynczym watku
+		//HANDLE h;
+		//DWORD threadID;
+		//unsigned int start = clock();
+		//h = CreateThread(NULL, 0, CompressThreadAsm, &params, 0, &threadID);
+		//WaitForSingleObject(h, INFINITE);
+		//unsigned int stop = clock();
+		//double time = static_cast<double>(stop - start) / CLOCKS_PER_SEC;
+
+		//cout << "Zakonczono watki" << endl;
+		//cout << "Czas dzialania: " << time << " sekund" << endl;
+		//cout << "Rozmiar danych skompresowanych: " << params.compressedDataSize * 2 << endl;
+		//cout << "Ilosc blokow: " << params.blockCount << endl;
+
+
+		//// zapis do pliku:
+
+		//// wyliczenie rozmiaru danych do zapisu
+		//// rozmiar danych (iloœæ kodów * 2 bajty) + 4 bajty na ka¿dy blok
+		//int destSize = (int)(params.compressedDataSize * 2 + params.blockCount * 4);
+
+		//// otwarcie i w³aœciwy zapis do pliku
+		//fstream destFile;
+		//destFile.open(destFilename.c_str(), ios::binary | ios::out | ios::trunc);
+		//destFile.write((char*)(&params.blockCount), 2); // zapis iloœci bloków
+		//destFile.write((char*)(&alphabetSize), 2); // zapis rozmiar alfabetu
+		//destFile.write(alphabet, alphabetSize); // zapis alfabetu
+		//destFile.write(params.compressedData, destSize);
+		//destFile.close();
+
+		//// zwolnienie zasobów
+		//delete params.compressedData;
+		//delete buffer;
 	}
 
 /* ====================================== */
 /* KOMPRESJA */
 	if(c == 1) { // kompresja C++
 		cout << "Przygotowywanie do kompresji..." << endl;
+		cout << "Ilosc watkow: " << threadCount << endl;
 
 		// Parsowanie argumentów - ustalenie nazwy pliku Ÿród³owego i docelowego
 		string srcFilename = argv[2];
@@ -210,46 +286,87 @@ int main(int argc, char* argv[]) {
 				}
 		}
 
-		// przygotowanie parametrów i pamiêci dla procesu kompresji
-		CompressParams params;
-		params.srcData = buffer; // wskaŸnik na dane do kompresji
-		params.srcDataSize = filesize; // rozmiar danych do skompresowania
-		params.dictSize = MAX_DICT_DATA_SIZE; // rozmiar s³ownika
-		params.compressedData = new char[filesize*2 + 256]; // zaalokowanie pamiêci dla skompresowanych danych
-		params.alphabet = alphabet;
-		params.alphabetSize = alphabetSize;
 
-		// realizacja w pojedynczym watku
-		HANDLE h;
-		DWORD threadID;
+		// przygotowanie danych dla w¹tków
+		DWORD* threadIDArray = new DWORD[threadCount];
+		HANDLE* handleArray = new HANDLE[threadCount];
+
+		CompressParams* paramsArray = new CompressParams[threadCount];
+
+		// rozmiar danych dla w¹tków (oprócz ostatniego)
+		int dataSizePerThread = filesize / threadCount;
+		// rozmiar danych dla ostatniego w¹tku (reszta danych)
+		// ca³kowity rozmiar danych minus rozmiar danych dla poprzednich w¹tków
+		int restDataSize = filesize - (dataSizePerThread * (threadCount - 1));
+
+		for (int i = 0; i < threadCount; i++) {
+			paramsArray[i].alphabet = alphabet;
+			paramsArray[i].alphabetSize = alphabetSize;
+			paramsArray[i].dictSize = MAX_DICT_DATA_SIZE;
+			paramsArray[i].srcData = &(buffer[i * dataSizePerThread]);
+			paramsArray[i].compressedData = new char[dataSizePerThread * 2];
+			
+			if(i == (threadCount - 1)) {
+				// parametry dla ostatniego w¹tku
+				paramsArray[i].srcDataSize = restDataSize;
+			}
+			else {
+				// parametry dla wszystkich w¹tków oprócz ostatniego
+				paramsArray[i].srcDataSize = dataSizePerThread;
+			}
+		}
+
+
+		// uruchomienie w¹tków
 		unsigned int start = clock();
-		h = CreateThread(NULL, 0, CompressThread, &params, 0, &threadID);
-		WaitForSingleObject(h, INFINITE);
+		for(int i = 0; i < threadCount; ++i) {
+			handleArray[i] = CreateThread(NULL, 0, CompressThread, &paramsArray[i], 0, &threadIDArray[i]);
+		}
+
+		WaitForMultipleObjects(threadCount, handleArray, TRUE, INFINITE);
 		unsigned int stop = clock();
 		double time = static_cast<double>(stop - start) / CLOCKS_PER_SEC;
 
+		// zamkniêcie uchwytów do w¹tków
+		for(int i = 0; i < threadCount; ++i) {
+			CloseHandle(handleArray[i]);
+		}
+
+		// podliczenie sumarycznych danych skompresowanych oraz ka¿dego w¹tku
+		int summaryCompressedDataSize = 0;
+		int summaryBlockCount = 0;
+		cout << "Dane skompresowane przez kazdy watek:" << endl;
+		for (int i = 0; i < threadCount; i++) {
+			cout << "Dane - watek " << i << ": " << paramsArray[i].compressedDataSize << endl;
+			cout << "Bloki - watek " << i << ": " << paramsArray[i].blockCount << endl;
+			summaryCompressedDataSize += paramsArray[i].compressedDataSize;
+			summaryBlockCount += paramsArray[i].blockCount;
+		}
+
 		cout << "Zakonczono watki" << endl;
 		cout << "Czas dzialania: " << time << " sekund" << endl;
-		cout << "Rozmiar danych skompresowanych: " << params.compressedDataSize * 2 << endl;
-		cout << "Ilosc blokow: " << params.blockCount << endl;
-
-		// zapis do pliku:
-
-		// wyliczenie rozmiaru danych do zapisu
-		// rozmiar danych (iloœæ kodów * 2 bajty) + 4 bajty na ka¿dy blok
-		int destSize = (int)(params.compressedDataSize * 2 + params.blockCount * 4);
 
 		// otwarcie i w³aœciwy zapis do pliku
 		fstream destFile;
 		destFile.open(destFilename.c_str(), ios::binary | ios::out | ios::trunc);
-		destFile.write((char*)(&params.blockCount), 2); // zapis iloœci bloków
+		destFile.write((char*)(&summaryBlockCount), 2); // zapis iloœci bloków
 		destFile.write((char*)(&alphabetSize), 2); // zapis rozmiar alfabetu
 		destFile.write(alphabet, alphabetSize); // zapis alfabetu
-		destFile.write(params.compressedData, destSize);
+		/*destFile.write(params.compressedData, destSize);*/
+		// zapis danych z poszczególnych w¹tków
+		for (int i = 0; i < threadCount; i++) {
+			// wyliczenie rozmiaru danych do zapisu
+			// rozmiar danych (iloœæ kodów * 2 bajty) + 4 bajty na ka¿dy blok
+			int destSize = (int)(paramsArray[i].compressedDataSize * 2 + paramsArray[i].blockCount * 4);
+			destFile.write(paramsArray[i].compressedData, destSize);
+		}
+
 		destFile.close();
 
 		// zwolnienie zasobów
-		delete params.compressedData;
+		for (int i = 0; i < threadCount; i++) {
+			delete paramsArray[i].compressedData;
+		}
 		delete buffer;
 	}
 
@@ -343,7 +460,7 @@ int main(int argc, char* argv[]) {
 3 - kompresja asm
 4 - dekompresja asm*/
 int parseCommand(int argc, char* argv[]) {
-	if(argc >=5) return -1; // zbyt wiele argumentów
+	if(argc >=6) return -1; // zbyt wiele argumentów
 
 	if(argc == 1) { // brak argumentów - wpisano sam¹ nazwê programu
 		writeHelp();
@@ -357,6 +474,13 @@ int parseCommand(int argc, char* argv[]) {
 		}
 		else
 			return -1;
+	}
+
+
+	// próba wczytania zdefiniowanej iloœci w¹tków
+	if(argc == 5) {
+		stringstream convert(argv[4]);
+		convert >> threadCount;
 	}
 
 	/* argc = <3,4> */

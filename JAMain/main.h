@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 
-extern "C" int _stdcall TestProc (LPVOID var);
+extern "C" int _stdcall TestProc (DWORD var);
 extern "C" DWORD WINAPI CompressThreadAsm (LPVOID params);
 
 int parseCommand(int argc, char* argv[]);

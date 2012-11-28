@@ -1,33 +1,32 @@
 .686
+.xmm
 .model flat, stdcall
 
 ;EXTERN printf:proc ; mo¿liwoœæ skorzystania z wypisywania informacji na ekran
 printf PROTO C :VARARG
 
-.data
-;ALPHABET_POINTER DD 0 ; wskaŸnik na alfabet
-;ALPHABET_SIZE DB 0 ;iloœæ s³ów w alfabecie
-
-DICT_POINTER DD 0 ; wskaŸnik na obszar pamiêci dla s³ownika
-DICT_END_POINTER DD 0 ; wskaŸnik na pierwszy wolny bajt s³ownika 
-DICT_MAX_SIZE DD 0 ; maksymalny rozmiar s³ownika
-DICT_CUR_SIZE DD 0 ; aktualny rozmiar s³ownika
-DICT_COUNT DD 0 ; iloœæ elementów w s³owniku
-
-BLOCK_COUNT DD 1 ; iloœæ bloków
-CUR_BLOCK_POINTER DD 0 ; wskaŸnik na aktualnie zapisywany blok
-;CUR_DATA_POINTER DD 0 ; wskaŸnik na aktualnie przetwarzany ci¹g
-;CUR_DATA_LEN DD 0 ; d³ugoœæ analizowanego ci¹gu
-
-COMPRESSED_DATA_SIZE DD 0 ; iloœæ skompresowanych danych w bloku (kodów)
-SUMMARY_COMPRESSED_DATA_SIZE DD 0 ; ogólnie iloœæ skompresowanych danych (kodów)
-
-;LAST_CODEWORD_POINTER DD 0 ; ostatnio rozpoznany ci¹g zaczynaj¹c od dwóch bajtów orkeœlaj¹cych jego d³ugoœæ)
-TEMP_CODEWORD_POINTER DD 0 ; tymczasowo rozpoznany ci¹g (zaczynaj¹c od dwóch bajtów okreœlaj¹cych jego d³ugoœæ)
-LAST_CODE DD 0 ; kod ostatnio rozpoznanego ci¹gu
-TEMP_CODE DD 0 ; tymczasowy kod rozpozanego ci¹gu
-
 .code
+; ============================================================================;
+; Struktura lokalnych danych dla u³atwienia przekazywania wielu zmiennych
+; do procedur.
+; ============================================================================;
+PROC_DATA_STR STRUCT
+	DICT_POINTER DWORD ? ; wskaŸnik na obszar pamiêci dla s³ownika
+	DICT_END_POINTER DWORD ? ; wskaŸnik na pierwszy wolny bajt s³ownika 
+	DICT_MAX_SIZE DWORD ? ; maksymalny rozmiar s³ownika
+	DICT_CUR_SIZE DWORD ? ; aktualny rozmiar s³ownika
+	DICT_COUNT DWORD ? ; iloœæ elementów w s³owniku
+
+	BLOCK_COUNT DWORD ? ; iloœæ bloków
+	CUR_BLOCK_POINTER DWORD ? ; wskaŸnik na aktualnie zapisywany blok
+
+	COMPRESSED_DATA_SIZE DWORD ? ; iloœæ skompresowanych danych w bloku (kodów)
+	SUMMARY_COMPRESSED_DATA_SIZE DWORD ? ; ogólnie iloœæ skompresowanych danych (kodów)
+
+	TEMP_CODEWORD_POINTER DWORD ? ; tymczasowo rozpoznany ci¹g (zaczynaj¹c od dwóch bajtów okreœlaj¹cych jego d³ugoœæ)
+	LAST_CODE DWORD ? ; kod ostatnio rozpoznanego ci¹gu
+	TEMP_CODE DWORD ? ; tymczasowy kod rozpozanego ci¹gu
+PROC_DATA_STR ENDS
 
 ; ============================================================================;
 ; Procedura dodaje nowe s³owo kodowe do s³ownika.
@@ -35,25 +34,29 @@ TEMP_CODE DD 0 ; tymczasowy kod rozpozanego ci¹gu
 ; codeword - wskaŸnik na s³owo kodowe
 ; len - d³ugoœæ s³owa kodowego
 ; ============================================================================;
-dictAddCodeword PROC codeword: DWORD, len: WORD
+dictAddCodeword PROC codeword: DWORD, len: WORD, PROC_DATA_PTR: DWORD
 	; zachowanie rejestrów
 	PUSHAD
+
+	; ustanowienie edx jako wskaŸnika na strukturê PROC_DATA_STR
+	ASSUME edx : PTR PROC_DATA_STR
+	MOV edx, PROC_DATA_PTR
 
 	; ustawienie licznika (d³ugoœæ s³owa kodowego)
 	MOV ecx, 0
 	MOV cx, len
 
 	; zwiêkszenie rozmiaru s³ownika
-	ADD DICT_CUR_SIZE, ecx
+	ADD [edx].DICT_CUR_SIZE, ecx
 
 	; zwiêkszenie liczby elementów w s³owniku
-	ADD DICT_COUNT, 1
+	ADD [edx].DICT_COUNT, 1
 
 	; ustalamy Ÿród³owy adres odczytu danych
 	MOV esi, codeword
 
 	; ustawiamy docelowy adres zapisu danych
-	MOV edi, DICT_END_POINTER 
+	MOV edi, [edx].DICT_END_POINTER 
 
 	; zapisanie d³ugoœci s³owa kodowego
 	MOV [edi], cx 
@@ -65,7 +68,7 @@ dictAddCodeword PROC codeword: DWORD, len: WORD
 	REP MOVSB 
 
 	; ustalenie nowego koñca s³ownika
-	MOV DICT_END_POINTER, edi 
+	MOV [edx].DICT_END_POINTER, edi 
 
 	; odtworzenie rejestrów
 	POPAD
@@ -75,9 +78,10 @@ dictAddCodeword ENDP
 ; ============================================================================;
 ; Procedura inicjuje s³ownik alfabetem.
 ; ============================================================================;
-dictInitAlphabet PROC
+dictInitAlphabet PROC PROC_DATA_PTR: DWORD
 	; zachowanie rejestrów
 	PUSHAD
+
 	; odczytanie iloœci znaków w alfabecie
 	MOV ecx, [ebx + 32] 
 	; wskaŸnik na alfabet
@@ -85,7 +89,7 @@ dictInitAlphabet PROC
 
 alphabetLoop:
 	; dodaj pojedynczy znak alfabetu do s³ownika
-	INVOKE dictAddCodeword, esi, 1 
+	INVOKE dictAddCodeword, esi, 1, PROC_DATA_PTR
 	ADD esi, 1
 	LOOP alphabetLoop
 
@@ -96,19 +100,23 @@ dictInitAlphabet ENDP
 ; ============================================================================;
 ; Procedura inicjuj¹ca zmienne DICT_POINTER oraz DICT_END_POINTER
 ; ============================================================================;
-dictInit PROC
+dictInit PROC PROC_DATA_PTR: DWORD
+	; ustanowienie edx jako wskaŸnika na strukturê PROC_DATA_STR
+	ASSUME edx : PTR PROC_DATA_STR
+	MOV edx, PROC_DATA_PTR
+
 	; ustawiamy wskaŸnik na miejsce dla s³ownika
 	MOV eax, [ebx + 20] 
-	MOV DICT_POINTER, eax
+	MOV [edx].DICT_POINTER, eax
 
 	; pierwszym wolnym bajtem jest pocz¹tek
-	MOV DICT_END_POINTER, eax 
+	MOV [edx].DICT_END_POINTER, eax 
 
 	; ustawiamy maksymalny rozmiar danych w s³owniku
 	MOV eax, [ebx + 24] 
-	MOV DICT_MAX_SIZE, eax
-	MOV DICT_CUR_SIZE, 0
-	MOV DICT_COUNT, 0
+	MOV [edx].DICT_MAX_SIZE, eax
+	MOV [edx].DICT_CUR_SIZE, 0
+	MOV [edx].DICT_COUNT, 0
 	RET
 dictInit ENDP
 
@@ -119,10 +127,14 @@ dictInit ENDP
 ; rozmiarem) oraz jego kod poprzez zmienn¹ TEMP_CODE.
 ; Jeœli nie ma takiego ci¹gu w s³owniku, to TEMP_CODEWORD_POINTER = 0
 ; ============================================================================;
-dictGetCodewordId PROC
+dictGetCodewordId PROC PROC_DATA_PTR: DWORD
 	PUSHAD
 
-	MOV edi, DICT_POINTER
+	; ustanowienie eax jako wskaŸnika na strukturê PROC_DATA_STR
+	ASSUME eax : PTR PROC_DATA_STR
+	MOV eax, PROC_DATA_PTR
+
+	MOV edi, [eax].DICT_POINTER
 
 	; aktualny numer (kod) elementu w s³owniku
 	MOV ebx, 0 
@@ -134,7 +146,7 @@ dictGetCodewordId PROC
 	CLD
 searchLoop:
 	; zapamiêtanie adresu na wypadek znalezienia
-	MOV eax, edi 
+	PUSH edi 
 
 	; pobieramy d³ugoœæ elementu
 	MOV cx, [edi] 
@@ -165,25 +177,29 @@ skip:
 next:
 	; przechodzimy do kolejnego elementu
 	ADD ebx, 1
+	; usuwamy zapamiêtany adres ze stosu
+	ADD esp, 4
 	; sprawdzamy czy nie przeszukaliœmy ju¿ wszystkich elementów w s³owniku
-	CMP ebx, DICT_COUNT 
+	CMP ebx, [eax].DICT_COUNT 
 	JNZ searchLoop
 
 	; jeœli nie znaleziono elementu w s³owniku
 	; zwrócenie zerowego wskaŸnika (nie znaleziono elementu)
-	MOV TEMP_CODEWORD_POINTER, 0 
+	MOV [eax].TEMP_CODEWORD_POINTER, 0 
+
 	JMP exit
 
 equal:
-	; w eax zapamiêtano adres na wypadek znalezienia ci¹gu
-	MOV TEMP_CODEWORD_POINTER, eax
+	; na stosie zapamiêtano adres na wypadek znalezienia ci¹gu
+	POP [eax].TEMP_CODEWORD_POINTER
 	; ebx wskazuje na kod znalezionego ci¹gu
-	MOV TEMP_CODE, ebx 
+	MOV [eax].TEMP_CODE, ebx 
 
 exit:
 	POPAD
 	; dodatkowe zwrócenie wskaŸnika przez eax
-	MOV eax, TEMP_CODEWORD_POINTER 
+	PUSH [eax].TEMP_CODEWORD_POINTER
+	POP eax
 	RET
 dictGetCodewordId ENDP
 
@@ -198,13 +214,21 @@ dictGetCodewordId ENDP
 ; edx - d³ugoœæ aktualnie analizowanego ci¹gu
 ; ============================================================================;
 CompressThreadAsm PROC params: DWORD
+	; struktura przechowuj¹ca zmienne potrzebne do wykonania kompresji
+	LOCAL PROC_DATA : PROC_DATA_STR 
+
 	; ebx dla kolejnych dwóch procedur bêdzie wskazywa³ strukturê params
 	MOV ebx, params 
 
+	; innicjalizacja zmiennych lokalnych
+	MOV PROC_DATA.BLOCK_COUNT, 1
+	MOV PROC_DATA.COMPRESSED_DATA_SIZE, 0
+	MOV PROC_DATA.SUMMARY_COMPRESSED_DATA_SIZE, 0
+
 	; inicjalizacja zmiennych s³ownika
-	INVOKE dictInit 
+	INVOKE dictInit, ADDR PROC_DATA 
 	; inicjalizacja s³ownika alfabetem
-	INVOKE dictInitAlphabet 
+	INVOKE dictInitAlphabet, ADDR PROC_DATA
 
 	; adres danych wejœciowych
 	MOV esi, [ebx + 0] 
@@ -214,7 +238,7 @@ CompressThreadAsm PROC params: DWORD
 
 	; adres danych wyjœciowych (skompresowanych)
 	MOV edi, [ebx + 8] 
-	MOV CUR_BLOCK_POINTER, edi
+	MOV PROC_DATA.CUR_BLOCK_POINTER, edi
 
 	; 4 bajty rezerwujemy na rozmiar bloku
 	ADD edi, 4 
@@ -227,7 +251,7 @@ dataLoop:
 	; wczytaj kolejny znak
 	ADD edx, 1 
 	; sprawdzamy czy jest ci¹g w s³owniku - przekazanie argumentów przez esi oraz edx
-	INVOKE dictGetCodewordId 
+	INVOKE dictGetCodewordId, ADDR PROC_DATA
 	; sprawdzamy czy jest w s³owniku
 	CMP eax, 0 
 	; je¿eli ci¹g jest w s³owniku
@@ -236,15 +260,15 @@ dataLoop:
 	; ci¹gu nie ma w s³owniku
 
 	; 1 wypisz kod zwi¹zany z c i zaktualizuj rozmiar danych skompresowanych
-	MOV	eax, LAST_CODE
+	MOV	eax, PROC_DATA.LAST_CODE
 	MOV [edi], ax
 
 	; przesuwamy siê o 2 bajty, na kolejn¹ pozycjê do zapisu kodu
 	ADD edi, 2 
-	ADD COMPRESSED_DATA_SIZE, 1
+	ADD PROC_DATA.COMPRESSED_DATA_SIZE, 1
 
 	; 2 dodaj przed³u¿ony ostatnio nierozpoznany ci¹g do s³ownika
-	INVOKE dictAddCodeword, esi, dx
+	INVOKE dictAddCodeword, esi, dx, ADDR PROC_DATA
 
 	; 3 prefiksem do kolejnego ci¹gu, jest ostatni znak z dodanego ci¹gu do s³ownika
 	; dodajemy d³ugoœæ ostatniego ci¹gu
@@ -255,13 +279,13 @@ dataLoop:
 	MOV edx, 1 
 
 	; analiza czy s³ownik osi¹gn¹³ limit rozmiaru (DICT_MAX_SIZE)
-	MOV eax, DICT_CUR_SIZE
-	CMP DICT_MAX_SIZE, eax
+	MOV eax, PROC_DATA.DICT_CUR_SIZE
+	CMP PROC_DATA.DICT_MAX_SIZE, eax
 	; rozmiar jeszcze nie przekroczy³
 	JG ok 
 
-	; analiza czy s³ownik osi¹gn¹³ limit elementów (na sztywno ustawiony na 65536 elementów)
-	CMP DICT_COUNT, 65536
+	; analiza czy s³ownik osi¹gn¹³ limit elementów (na sztywno ustawiony na 16384 elementów)
+	CMP PROC_DATA.DICT_COUNT, 16384
 	; nie osi¹gn¹³ limitu elementów
 	JG ok 
 
@@ -270,19 +294,19 @@ dataLoop:
 	; ebx dla kolejnych dwóch procedur bêdzie wskazywa³ strukturê params
 	MOV ebx, params 
 	; inicjalizacja zmiennych s³ownika
-	INVOKE dictInit 
+	INVOKE dictInit, ADDR PROC_DATA 
 	; inicjalizacja s³ownika alfabetem
-	INVOKE dictInitAlphabet 
+	INVOKE dictInitAlphabet, ADDR PROC_DATA
 
 	; 2. zapisanie rozmiaru bloku, dodanie do sumarycznego rozmiaru
 	; pobranie adresu pocz¹tku bloku
-	MOV ebx, CUR_BLOCK_POINTER 
-	MOV eax, COMPRESSED_DATA_SIZE
+	MOV ebx, PROC_DATA.CUR_BLOCK_POINTER 
+	MOV eax, PROC_DATA.COMPRESSED_DATA_SIZE
 	MOV [ebx], eax
-	ADD SUMMARY_COMPRESSED_DATA_SIZE, eax
+	ADD PROC_DATA.SUMMARY_COMPRESSED_DATA_SIZE, eax
 
 	; 3. zwiêkszenie numeracji iloœci bloków
-	ADD BLOCK_COUNT, 1
+	ADD PROC_DATA.BLOCK_COUNT, 1
 	
 	; 4. ustawienie nowego bloku
 	; otrzymanie iloœci bajtów danych skompresowanych
@@ -290,47 +314,45 @@ dataLoop:
 	; dodanie 4 bajtów rozmiaru z pocz¹tku bloku
 	ADD eax, 4 
 	; ustalenie nowego pocz¹tku bloku
-	ADD CUR_BLOCK_POINTER, eax 
+	ADD PROC_DATA.CUR_BLOCK_POINTER, eax 
 	; nowe miejsce zapisu kodów
-	MOV edi, CUR_BLOCK_POINTER 
+	MOV edi, PROC_DATA.CUR_BLOCK_POINTER 
 	; zarezerwowanie 4 bajtów na rozmiar nowego bloku
 	ADD edi, 4 
 	; wyzerowanie aktualnego rozmiaru danych skompresowanych
-	MOV COMPRESSED_DATA_SIZE, 0 
+	MOV PROC_DATA.COMPRESSED_DATA_SIZE, 0 
 
 ok:
 	; aktualizujemy ostatnio rozpoznany ci¹g
 	; musi byæ w s³owniku, poniewa¿ jest to pojedynczy znak alfabetu
-	INVOKE dictGetCodewordId 
-	;MOV LAST_CODEWORD_POINTER, TEMP_CODEWORD_POINTER
+	INVOKE dictGetCodewordId, ADDR PROC_DATA
 
 next:
-	;MOV LAST_CODEWORD_POINTER, TEMP_CODEWORD_POINTER ; zapamiêtaj ostatnio rozpoznany ci¹g
-	MOV eax, TEMP_CODE
+	MOV eax, PROC_DATA.TEMP_CODE
 	; zapamiêtaj ostatnio rozpoznany kod
-	MOV LAST_CODE, eax 
+	MOV PROC_DATA.LAST_CODE, eax 
 
 	DEC ecx
 	JNZ dataLoop
 
 	; na koñcu wypisujemy kod zwi¹zany z ostatnio rozpoznanym symbolem i aktualizujemy rozmiar danych skompresowanych
-	MOV	eax, LAST_CODE
+	MOV	eax, PROC_DATA.LAST_CODE
 	MOV [edi], ax
-	ADD COMPRESSED_DATA_SIZE, 1
-	MOV eax, COMPRESSED_DATA_SIZE
-	ADD SUMMARY_COMPRESSED_DATA_SIZE, eax
+	ADD PROC_DATA.COMPRESSED_DATA_SIZE, 1
+	MOV eax, PROC_DATA.COMPRESSED_DATA_SIZE
+	ADD PROC_DATA.SUMMARY_COMPRESSED_DATA_SIZE, eax
 
 	; zapisujemy rozmiar ostatniego bloku
-	MOV eax, COMPRESSED_DATA_SIZE
-	MOV edi, CUR_BLOCK_POINTER
+	MOV eax, PROC_DATA.COMPRESSED_DATA_SIZE
+	MOV edi, PROC_DATA.CUR_BLOCK_POINTER
 	MOV [edi], eax
 
 	; aktualizujemy dane zwrotne w parametrach kompresji
 	MOV ebx, params
-	MOV eax, SUMMARY_COMPRESSED_DATA_SIZE
+	MOV eax, PROC_DATA.SUMMARY_COMPRESSED_DATA_SIZE
 	MOV [ebx + 12], eax
 
-	MOV eax, BLOCK_COUNT
+	MOV eax, PROC_DATA.BLOCK_COUNT
 	MOV [ebx + 16], eax
 
 	RET
@@ -338,13 +360,16 @@ CompressThreadAsm ENDP
 
 
 ; ============================================================================;
+
+; ============================================================================;
 TestProc proc var: DWORD
-	MOV ebx, var ; ebx dla kolejnych dwóch procedur bêdzie wskazywa³ strukturê params
-	INVOKE dictInit ; inicjalizacja zmiennych s³ownika
-	INVOKE dictInitAlphabet ; inicjalizacja s³ownika alfabetem
-	RET
+
+
 TestProc endp
 
+.data
+ZMIENNA DB "Hello world. How"
+ZMIENNA2 DB "Hello world. Hoe"
 
 ; ============================================================================;
 ; 
