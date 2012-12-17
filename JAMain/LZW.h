@@ -18,7 +18,6 @@ struct CompressParams {
 	char* compressedData; // miejsce na skompresowane dane
 	int compressedDataSize; // rozmiar danych skompresowanych (w s³owach kodowych, nie bajtach)
 	unsigned short blockCount;
-	int dictSize; // rozmiar s³ownika
 	char* alphabet; // wskaŸnik na alfabet
 	int alphabetSize;  // liczba znaków w alfabecie
 
@@ -28,7 +27,6 @@ struct CompressParams {
 		compressedData(NULL),
 		compressedDataSize(0),
 		blockCount(0),
-		dictSize(0),
 		alphabet(NULL),
 		alphabetSize(0)
 	{}
@@ -57,9 +55,6 @@ struct DecompressParams {
 struct Element {
 	char* value;
 	int size; // ile bajtów ma value
-
-	//DEBUG
-	int number; // numer s³owa kodowegos
 
 	Element* next;
 
@@ -92,14 +87,7 @@ public:
 
 	// zwolnienie zasobów
 	~Dictionary() {
-		//if(head == NULL) return;
 		Element* tmp = head;
-		/*while(tmp->next != NULL) {
-			Element* tmp_prev = tmp;
-			tmp = tmp->next;
-			delete tmp_prev;
-		}*/
-		//delete tmp;
 
 		while(tmp != NULL) {
 			Element* toDelete = tmp;
@@ -120,37 +108,36 @@ public:
 		if(head == NULL) {
 			head = new Element(pWord, length);
 
-			//DEBUG
-			head->number = count;
-
 			tail = head;
 			count++;
 			size += length;
-			return count - 1; // zwraca kod nowego s³owa w s³owniku
+			// zwraca kod nowego s³owa w s³owniku
+			return count - 1; 
 		}
 
 		tail->next = new Element(pWord, length);
 		tail = tail->next;
 
-		//DEBUG
-		tail->number = count;
-
 		count++;
 		size += length;
-		return count - 1; // zwraca kod nowego s³owa w s³owniku
+		// zwraca kod nowego s³owa w s³owniku
+		return count - 1; 
 	}
 
 	// zwraca kod danego s³owa w s³owniku; jeœli brak w s³owniku to zwraca -1
 	int getCodewordId(char* pWord, int length) {
 		Element* tmp = head;
-		int result = -1; // domyœlnie nie znaleziono elementu
+		// domyœlnie nie znaleziono elementu
+		int result = -1; 
 		for (int i = 0; i < count; i++) {
-			if(length != tmp->size) {// nie ma sensu porównywaæ o ci¹gów o ró¿nych d³ugoœciach
+			if(length != tmp->size) {
+				// nie ma sensu porównywaæ o ci¹gów o ró¿nych d³ugoœciach
 				tmp = tmp->next;
 				continue;
 			}
 			if(memcmp(pWord, tmp->value, length) == 0) {
-				result = i; // znaleziono dopasowanie
+				// znaleziono dopasowanie
+				result = i; 
 				break; 
 			}
 			tmp = tmp->next;
@@ -174,28 +161,6 @@ public:
 
 	int getCount() {
 		return count;
-	}
-
-	Element* operator[](int index) {
-		if(index >= count) return NULL;
-
-		Element* tmp = head;
-		for (int i = 0; i < index; i++) {
-			head = head->next;
-		}
-		
-		return head;
-	}
-
-	void printDebugInfo() {
-		cout << "Count: " << count << endl;
-		cout << "Size: " << size << endl;
-		cout << "Words: " << endl;
-		Element* tmp = head;
-		for(int i = 0; i < count; i++) {
-			cout << i << ": " << tmp->value << endl;
-			tmp = tmp->next;
-		}
 	}
 };
 

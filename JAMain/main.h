@@ -32,8 +32,3 @@ struct CompressParamsAsm {
 		alphabetSize(0)
 	{}
 };
-
-struct temp {
-	int a;
-	int b;
-};

@@ -1,4 +1,3 @@
 LIBRARY "JADLL"
 EXPORTS
 CompressThreadAsm
-TestProc

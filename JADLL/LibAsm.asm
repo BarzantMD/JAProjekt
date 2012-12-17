@@ -2,8 +2,7 @@
 .xmm
 .model flat, stdcall
 
-;EXTERN printf:proc ; mo¿liwoœæ skorzystania z wypisywania informacji na ekran
-printf PROTO C :VARARG
+;printf PROTO C :VARARG ; mo¿liwoœæ wypisywania na ekran informacji
 
 .code
 ; ============================================================================;
@@ -101,6 +100,9 @@ dictInitAlphabet ENDP
 ; Procedura inicjuj¹ca zmienne DICT_POINTER oraz DICT_END_POINTER
 ; ============================================================================;
 dictInit PROC PROC_DATA_PTR: DWORD
+	; zachowanie rejestrów
+	PUSHAD
+
 	; ustanowienie edx jako wskaŸnika na strukturê PROC_DATA_STR
 	ASSUME edx : PTR PROC_DATA_STR
 	MOV edx, PROC_DATA_PTR
@@ -117,8 +119,145 @@ dictInit PROC PROC_DATA_PTR: DWORD
 	MOV [edx].DICT_MAX_SIZE, eax
 	MOV [edx].DICT_CUR_SIZE, 0
 	MOV [edx].DICT_COUNT, 0
+
+	; przywrócenie rejestrów
+	POPAD
 	RET
 dictInit ENDP
+
+; ============================================================================;
+; Procedura porównuj¹ca dwa ci¹gi tradycyjnym sposobem.
+; Ci¹gi s¹ przekazywane przez dwa rejestry wskazuj¹ce na ci¹gi,
+; oraz d³ugoœæ tych ci¹gów w rejestrze ecx.
+; ============================================================================;
+compareString PROC
+	; zapamiêtanie adresu Ÿród³owego do kolejnego porównania (z kolejnym elementem)
+	PUSH esi 
+	
+	;pêtla porównania danego elementu
+cmpLoop:
+	CMPSB
+	LOOPE cmpLoop
+	; przywrócenie pierwotnego esi dla porównania z kolejnym elementem
+	POP esi  
+	RET
+compareString ENDP
+
+; ============================================================================;
+; Procedura porównuj¹ca dwa ci¹gi wykorzystuj¹c jeœli to mo¿liwe rejestry
+; technologii SSE (XMM).
+; Ci¹gi s¹ przekazywane przez dwa rejestry wskazuj¹ce na ci¹gi,
+; oraz d³ugoœæ tych ci¹gów w rejestrze ecx.
+; ============================================================================;
+compareStringSIMD128 PROC
+	; zapamiêtanie adresu Ÿród³owego do kolejnego porównania (z kolejnym elementem)
+	PUSH esi
+	; z rejestru eax bêdziemy korzystali do maski bitów z rejestru xmm 
+	PUSH eax
+	
+	;pêtla porównania danego elementu
+cmpSIMD:
+	; sprawdzamy czy pozosta³y ci¹g do porównania jest d³u¿szy ni¿ 16 bajtów
+	CMP ecx, 16
+	; jeœli mniejszy, to skaczemy do tradycyjnego porównania
+	JNGE cmpLoopEnter
+	; porównanie 16 bajtów przy pomocy SIMD
+	; za³adowanie 16B jednego ci¹gu do xmm0
+	MOVDQU xmm0, OWORD PTR [esi]
+	; za³adowanie 16B drugiego ci¹gu do xmm1
+	MOVDQU xmm1, OWORD PTR [edi]
+	; porównanie 16B
+	PCMPEQB xmm0, xmm1
+	; wyci¹gniêcie maski bitowej
+	PMOVMSKB eax, xmm0
+	; wartoœæ 0FFFFh oznacza, ¿e 16B by³o równych sobie
+	CMP eax, 0FFFFh
+	; jeœli nie by³o zgodnoœci, koñczymy porównanie i wychodzimy z porównania
+	JNE exitCompare
+	
+	; modyfikujemy odpowiednio rejestry z ci¹gami
+	ADD edi, 16
+	ADD esi, 16
+	SUB ecx, 16
+	; próbujemy dalej porównywaæ za pomoc¹ SIMD
+	JMP cmpSIMD
+
+
+cmpLoopEnter:
+	; sprawdzenie czy jest jeszcze coœ do porównania
+	CMP ecx, 0
+	JE exitCompare
+
+	; porównanie pozosta³ych bajtów zwyk³ym sposobem
+cmpLoop:
+	CMPSB
+	LOOPE cmpLoop
+
+exitCompare:
+	; przywrócenie eax
+	POP eax
+	; przywrócenie pierwotnego esi dla porównania z kolejnym elementem
+	POP esi  
+	RET
+compareStringSIMD128 ENDP
+
+; ============================================================================;
+; Procedura porównuj¹ca dwa ci¹gi wykorzystuj¹c jeœli to mo¿liwe rejestry
+; technologii SSE (MMX).
+; Ci¹gi s¹ przekazywane przez dwa rejestry wskazuj¹ce na ci¹gi,
+; oraz d³ugoœæ tych ci¹gów w rejestrze ecx.
+; ============================================================================;
+compareStringSIMD64 PROC
+	; zapamiêtanie adresu Ÿród³owego do kolejnego porównania (z kolejnym elementem)
+	PUSH esi
+	; z rejestru eax bêdziemy korzystali do maski bitów z rejestru xmm 
+	PUSH eax
+	
+	;pêtla porównania danego elementu
+cmpSIMD:
+	; sprawdzamy czy pozosta³y ci¹g do porównania jest d³u¿szy ni¿ 16 bajtów
+	CMP ecx, 8
+	; jeœli mniejszy, to skaczemy do tradycyjnego porównania
+	JNGE cmpLoopEnter
+	; porównanie 8 bajtów przy pomocy SIMD
+	; za³adowanie 8B jednego ci¹gu do xmm0
+	MOVQ mm0, QWORD PTR [esi]
+	; za³adowanie 8B drugiego ci¹gu do xmm1
+	MOVQ mm1, QWORD PTR [edi]
+	; porównanie 16B
+	PCMPEQB mm0, mm1
+	; wyci¹gniêcie maski bitowej
+	PMOVMSKB eax, mm0
+	; wartoœæ 0FFh oznacza, ¿e 16B by³o równych sobie
+	CMP eax, 0FFh
+	; jeœli nie by³o zgodnoœci, koñczymy porównanie i wychodzimy z porównania
+	JNE exitCompare
+	
+	; modyfikujemy odpowiednio rejestry z ci¹gami
+	ADD edi, 8
+	ADD esi, 8
+	SUB ecx, 8
+	; próbujemy dalej porównywaæ za pomoc¹ SIMD
+	JMP cmpSIMD
+
+
+cmpLoopEnter:
+	; sprawdzenie czy jest jeszcze coœ do porównania
+	CMP ecx, 0
+	JE exitCompare
+
+	; porównanie pozosta³ych bajtów zwyk³ym sposobem
+cmpLoop:
+	CMPSB
+	LOOPE cmpLoop
+
+exitCompare:
+	; przywrócenie eax
+	POP eax
+	; przywrócenie pierwotnego esi dla porównania z kolejnym elementem
+	POP esi  
+	RET
+compareStringSIMD64 ENDP
 
 ; ============================================================================;
 ; Procedura zwraca kod podanego ci¹gu kodowego (przekazanego przez rejestry
@@ -158,15 +297,9 @@ searchLoop:
 	; nie ma sensu porównywaæ ci¹gów o ró¿nych d³ugoœciach - przeskoczenie do kolejnego elementu
 	JNE skip 
 
-	; zapamiêtanie adresu Ÿród³owego do kolejnego porównania (z kolejnym elementem)
-	PUSH esi 
+	; porównanie ci¹gów (zwrot wyniku przez ustawienie flagi
+	INVOKE compareString
 
-	;pêtla porównania danego elementu
-cmpLoop:
-	CMPSB
-	LOOPE cmpLoop
-	; przywrócenie pierwotnego esi dla porównania z kolejnym elementem
-	POP esi 
 	; jeœli ca³y ci¹g siê zgadza
 	JE equal 
 
@@ -281,14 +414,18 @@ dataLoop:
 	; analiza czy s³ownik osi¹gn¹³ limit rozmiaru (DICT_MAX_SIZE)
 	MOV eax, PROC_DATA.DICT_CUR_SIZE
 	CMP PROC_DATA.DICT_MAX_SIZE, eax
-	; rozmiar jeszcze nie przekroczy³
-	JG ok 
+	; s³ownik jeszcze nie przekroczy³ dozwolonego rozmiaru - sprawdzenie drugiego kryterium
+	JG check
+	; s³ownik przekroczy³ dozwolony rozmiar - tworzymy nowy
+	JMP newDict
 
+check:
 	; analiza czy s³ownik osi¹gn¹³ limit elementów (na sztywno ustawiony na 16384 elementów)
 	CMP PROC_DATA.DICT_COUNT, 16384
 	; nie osi¹gn¹³ limitu elementów
-	JG ok 
+	JNGE ok
 
+newDict:
 	; s³ownik osi¹gn¹³ limit, trzeba wyczyœciæ, utworzyæ nowy, i rozpocz¹æ nowy blok
 	; 1. inicjalizacja nowego s³ownika
 	; ebx dla kolejnych dwóch procedur bêdzie wskazywa³ strukturê params
@@ -357,27 +494,6 @@ next:
 
 	RET
 CompressThreadAsm ENDP
-
-
-; ============================================================================;
-
-; ============================================================================;
-TestProc proc var: DWORD
-
-
-TestProc endp
-
-.data
-ZMIENNA DB "Hello world. How"
-ZMIENNA2 DB "Hello world. Hoe"
-
-; ============================================================================;
-; 
-; ============================================================================;
-
-; ============================================================================;
-; 
-; ============================================================================;
 
 
 end

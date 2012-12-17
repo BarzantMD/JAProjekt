@@ -6,6 +6,7 @@
 #include <time.h>
 #include <sstream>
 
+// mo¿emy zdefiniowaæ na sztywno na ilu w¹tkach ma dzia³aæ program
 //#define NUM_OF_CORES 4
 
 int threadCount = 0;
@@ -13,16 +14,6 @@ int threadCount = 0;
 using namespace std;
 
 int main(int argc, char* argv[]) {
-	// testowy kod tymczasowy
-	int temp = TestProc(3);
-	cout << "Zwrocono: " << temp << endl;
-
-	system("pause");
-	return 0;
-
-
-
-
 	int c = parseCommand(argc, argv);
 
 	// ustalenie liczby w¹tków
@@ -49,6 +40,7 @@ int main(int argc, char* argv[]) {
 /* KOMPRESJA ASEMBLER */
 	if(c == 3) { // kompresja ASM
 		cout << "Przygotowywanie do kompresji..." << endl;
+		cout << "Ilosc watkow: " << threadCount << endl;
 
 		// Parsowanie argumentów - ustalenie nazwy pliku Ÿród³owego i docelowego
 		string srcFilename = argv[2];
@@ -60,11 +52,10 @@ int main(int argc, char* argv[]) {
 
 		
 		fstream srcFile;
-		srcFile.open(srcFilename.c_str(), ios::binary | ios::in); // otwarcie pliku Ÿród³owego
+		srcFile.open(srcFilename.c_str(), ios::binary | ios::in); 
 
-		if(!srcFile.is_open()) { // sprawdzenie czy plik Ÿród³owy istnieje
+		if(!srcFile.is_open()) { 
 			cout << "Nie mozna otworzyc pliku zrodlowego lub plik nie istnieje!";
-			system("pause");
 			return 0;
 		}
 
@@ -73,6 +64,13 @@ int main(int argc, char* argv[]) {
 		int filesize = srcFile.tellg();
 		srcFile.seekg(0, ios::beg);
 		cout << "Rozmiar pliku zrodlowego: " << filesize << endl;
+
+		// ograniczenie pliku przeznaczonego do kompresji do 20MB (dla uproszczenia gospodarki pamiêci¹)
+		if(filesize > 20480000){
+			cout << "Plik jest zbyt duzy! (Ograniczenie do 20MB)" << endl;
+			srcFile.close();
+			return 0;
+		}
 		
 		char* buffer = new char[filesize];
 
@@ -80,21 +78,22 @@ int main(int argc, char* argv[]) {
 		srcFile.close();
 
 		// przygotowanie alfabetu
-		char* alphabet = new char[256]; // zarezerwowanie pamiêci dla alfabetu - max 256B
+		char* alphabet = new char[256];
 
-		int alphabetSize = 0; // iloœæ znaków w alfabecie
-		for (int i = 0; i < filesize; i++) { // przegl¹damy ca³e dane
-			bool isAlready = false; // czy jest ju¿ w s³owniku
+		int alphabetSize = 0;
+		for (int i = 0; i < filesize; i++) { 
+			// czy jest ju¿ w s³owniku
+			bool isAlready = false; 
 
-			for (int j = 0; j < alphabetSize; j++) { // pêtla porównuj¹ca znak z pêtli wy¿ej z ka¿dym znakiem z dotychczasowego alfabetu
+			for (int j = 0; j < alphabetSize; j++) {
 				if(alphabet[j] == buffer[i]) {
-					isAlready = true; // znak wystêpuje ju¿ w alfabecie
+					isAlready = true;
 					break;
 				}
 			}
 
 			if(!isAlready) {
-					alphabet[alphabetSize] = buffer[i]; // dodajemy nowy znak do alfabetu
+					alphabet[alphabetSize] = buffer[i];
 					alphabetSize++;
 				}
 		}
@@ -117,7 +116,8 @@ int main(int argc, char* argv[]) {
 			paramsArray[i].dictSize = MAX_DICT_DATA_SIZE;
 			paramsArray[i].dictData = new char[MAX_DICT_DATA_SIZE * 2 + 65536];
 			paramsArray[i].srcData = &(buffer[i * dataSizePerThread]);
-			paramsArray[i].compressedData = new char[dataSizePerThread * 2];
+			// maksymalnie dwukrotny przyrost danych (gdy kompresujemy pliki binarne zamiast tekstowych)
+			paramsArray[i].compressedData = new char[50120000/threadCount];
 			
 			if(i == (threadCount - 1)) {
 				// parametry dla ostatniego w¹tku
@@ -129,46 +129,41 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
+		cout << "Kompresja danych. Prosze czekac..." << endl;
 
 		// uruchomienie w¹tków
 		unsigned int start = clock();
 
-		CompressThreadAsm(&paramsArray[0]);
+		for(int i = 0; i < threadCount; ++i) {
+			handleArray[i] = CreateThread(NULL, 0, CompressThreadAsm, &paramsArray[i], 0, &threadIDArray[i]);
+		}
 
-		//for(int i = 0; i < threadCount; ++i) {
-		//	handleArray[i] = CreateThread(NULL, 0, CompressThreadAsm, &paramsArray[i], 0, &threadIDArray[i]);
-		//}
+		WaitForMultipleObjects(threadCount, handleArray, TRUE, INFINITE);
+		unsigned int stop = clock();
+		double time = static_cast<double>(stop - start) / CLOCKS_PER_SEC;
 
-		//WaitForMultipleObjects(threadCount, handleArray, TRUE, INFINITE);
-		//unsigned int stop = clock();
-		//double time = static_cast<double>(stop - start) / CLOCKS_PER_SEC;
-
-		//// zamkniêcie uchwytów do w¹tków
-		//for(int i = 0; i < threadCount; ++i) {
-		//	CloseHandle(handleArray[i]);
-		//}
+		for(int i = 0; i < threadCount; ++i) {
+			CloseHandle(handleArray[i]);
+		}
 
 		// podliczenie sumarycznych danych skompresowanych oraz ka¿dego w¹tku
 		int summaryCompressedDataSize = 0;
 		int summaryBlockCount = 0;
-		cout << "Dane skompresowane przez kazdy watek:" << endl;
 		for (int i = 0; i < threadCount; i++) {
-			cout << "Dane - watek " << i << ": " << paramsArray[i].compressedDataSize << endl;
-			cout << "Bloki - watek " << i << ": " << paramsArray[i].blockCount << endl;
 			summaryCompressedDataSize += paramsArray[i].compressedDataSize;
 			summaryBlockCount += paramsArray[i].blockCount;
 		}
 
-		cout << "Zakonczono watki" << endl;
 		cout << "Czas dzialania: " << time << " sekund" << endl;
 
-		// otwarcie i w³aœciwy zapis do pliku
+		cout << "Rozmiar danych po skompresowaniu: " << summaryCompressedDataSize * 2 << endl;
+
 		fstream destFile;
 		destFile.open(destFilename.c_str(), ios::binary | ios::out | ios::trunc);
-		destFile.write((char*)(&summaryBlockCount), 2); // zapis iloœci bloków
-		destFile.write((char*)(&alphabetSize), 2); // zapis rozmiar alfabetu
-		destFile.write(alphabet, alphabetSize); // zapis alfabetu
-		/*destFile.write(params.compressedData, destSize);*/
+		destFile.write((char*)(&summaryBlockCount), 2);
+		destFile.write((char*)(&alphabetSize), 2); 
+		destFile.write(alphabet, alphabetSize); 
+
 		// zapis danych z poszczególnych w¹tków
 		for (int i = 0; i < threadCount; i++) {
 			// wyliczenie rozmiaru danych do zapisu
@@ -185,50 +180,6 @@ int main(int argc, char* argv[]) {
 			delete paramsArray[i].dictData;
 		}
 		delete buffer;
-
-		//// przygotowanie parametrów i pamiêci dla procesu kompresji
-		//CompressParamsAsm params;
-		//params.srcData = buffer; // wskaŸnik na dane do kompresji
-		//params.srcDataSize = filesize; // rozmiar danych do skompresowania
-		//params.dictData = new char[MAX_DICT_DATA_SIZE * 2 + 65536];
-		//params.dictSize = MAX_DICT_DATA_SIZE; // rozmiar s³ownika
-		//params.compressedData = new char[filesize*2 + 256]; // zaalokowanie pamiêci dla skompresowanych danych
-		//params.alphabet = alphabet;
-		//params.alphabetSize = alphabetSize;
-
-		//// realizacja w pojedynczym watku
-		//HANDLE h;
-		//DWORD threadID;
-		//unsigned int start = clock();
-		//h = CreateThread(NULL, 0, CompressThreadAsm, &params, 0, &threadID);
-		//WaitForSingleObject(h, INFINITE);
-		//unsigned int stop = clock();
-		//double time = static_cast<double>(stop - start) / CLOCKS_PER_SEC;
-
-		//cout << "Zakonczono watki" << endl;
-		//cout << "Czas dzialania: " << time << " sekund" << endl;
-		//cout << "Rozmiar danych skompresowanych: " << params.compressedDataSize * 2 << endl;
-		//cout << "Ilosc blokow: " << params.blockCount << endl;
-
-
-		//// zapis do pliku:
-
-		//// wyliczenie rozmiaru danych do zapisu
-		//// rozmiar danych (iloœæ kodów * 2 bajty) + 4 bajty na ka¿dy blok
-		//int destSize = (int)(params.compressedDataSize * 2 + params.blockCount * 4);
-
-		//// otwarcie i w³aœciwy zapis do pliku
-		//fstream destFile;
-		//destFile.open(destFilename.c_str(), ios::binary | ios::out | ios::trunc);
-		//destFile.write((char*)(&params.blockCount), 2); // zapis iloœci bloków
-		//destFile.write((char*)(&alphabetSize), 2); // zapis rozmiar alfabetu
-		//destFile.write(alphabet, alphabetSize); // zapis alfabetu
-		//destFile.write(params.compressedData, destSize);
-		//destFile.close();
-
-		//// zwolnienie zasobów
-		//delete params.compressedData;
-		//delete buffer;
 	}
 
 /* ====================================== */
@@ -247,11 +198,10 @@ int main(int argc, char* argv[]) {
 
 		
 		fstream srcFile;
-		srcFile.open(srcFilename.c_str(), ios::binary | ios::in); // otwarcie pliku Ÿród³owego
+		srcFile.open(srcFilename.c_str(), ios::binary | ios::in); 
 
-		if(!srcFile.is_open()) { // sprawdzenie czy plik Ÿród³owy istnieje
+		if(!srcFile.is_open()) { 
 			cout << "Nie mozna otworzyc pliku zrodlowego lub plik nie istnieje!";
-			system("pause");
 			return 0;
 		}
 
@@ -260,6 +210,13 @@ int main(int argc, char* argv[]) {
 		int filesize = srcFile.tellg();
 		srcFile.seekg(0, ios::beg);
 		cout << "Rozmiar pliku zrodlowego: " << filesize << endl;
+
+		// ograniczenie pliku przeznaczonego do kompresji do 20MB (dla uproszczenia gospodarki pamiêci¹)
+		if(filesize > 20480000){
+			cout << "Plik jest zbyt duzy! (Ograniczenie do 20MB)" << endl;
+			srcFile.close();
+			return 0;
+		}
 		
 		char* buffer = new char[filesize];
 
@@ -267,21 +224,22 @@ int main(int argc, char* argv[]) {
 		srcFile.close();
 
 		// przygotowanie alfabetu
-		char* alphabet = new char[256]; // zarezerwowanie pamiêci dla alfabetu - max 256B
+		char* alphabet = new char[256];
 
-		int alphabetSize = 0; // iloœæ znaków w alfabecie
-		for (int i = 0; i < filesize; i++) { // przegl¹damy ca³e dane
-			bool isAlready = false; // czy jest ju¿ w s³owniku
+		int alphabetSize = 0; 
+		for (int i = 0; i < filesize; i++) {
+			// czy jest ju¿ w s³owniku
+			bool isAlready = false; 
 
-			for (int j = 0; j < alphabetSize; j++) { // pêtla porównuj¹ca znak z pêtli wy¿ej z ka¿dym znakiem z dotychczasowego alfabetu
+			for (int j = 0; j < alphabetSize; j++) {
 				if(alphabet[j] == buffer[i]) {
-					isAlready = true; // znak wystêpuje ju¿ w alfabecie
+					isAlready = true;
 					break;
 				}
 			}
 
 			if(!isAlready) {
-					alphabet[alphabetSize] = buffer[i]; // dodajemy nowy znak do alfabetu
+					alphabet[alphabetSize] = buffer[i]; 
 					alphabetSize++;
 				}
 		}
@@ -302,9 +260,9 @@ int main(int argc, char* argv[]) {
 		for (int i = 0; i < threadCount; i++) {
 			paramsArray[i].alphabet = alphabet;
 			paramsArray[i].alphabetSize = alphabetSize;
-			paramsArray[i].dictSize = MAX_DICT_DATA_SIZE;
 			paramsArray[i].srcData = &(buffer[i * dataSizePerThread]);
-			paramsArray[i].compressedData = new char[dataSizePerThread * 2];
+			// maksymalnie dwukrotny przyrost danych (gdy kompresujemy pliki binarne zamiast tekstowych)
+			paramsArray[i].compressedData = new char[50120000/threadCount];
 			
 			if(i == (threadCount - 1)) {
 				// parametry dla ostatniego w¹tku
@@ -316,6 +274,7 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
+		cout << "Kompresja danych. Prosze czekac..." << endl;
 
 		// uruchomienie w¹tków
 		unsigned int start = clock();
@@ -327,7 +286,6 @@ int main(int argc, char* argv[]) {
 		unsigned int stop = clock();
 		double time = static_cast<double>(stop - start) / CLOCKS_PER_SEC;
 
-		// zamkniêcie uchwytów do w¹tków
 		for(int i = 0; i < threadCount; ++i) {
 			CloseHandle(handleArray[i]);
 		}
@@ -335,24 +293,21 @@ int main(int argc, char* argv[]) {
 		// podliczenie sumarycznych danych skompresowanych oraz ka¿dego w¹tku
 		int summaryCompressedDataSize = 0;
 		int summaryBlockCount = 0;
-		cout << "Dane skompresowane przez kazdy watek:" << endl;
 		for (int i = 0; i < threadCount; i++) {
-			cout << "Dane - watek " << i << ": " << paramsArray[i].compressedDataSize << endl;
-			cout << "Bloki - watek " << i << ": " << paramsArray[i].blockCount << endl;
 			summaryCompressedDataSize += paramsArray[i].compressedDataSize;
 			summaryBlockCount += paramsArray[i].blockCount;
 		}
 
-		cout << "Zakonczono watki" << endl;
 		cout << "Czas dzialania: " << time << " sekund" << endl;
 
-		// otwarcie i w³aœciwy zapis do pliku
+		cout << "Rozmiar danych po skompresowaniu: " << summaryCompressedDataSize * 2 << endl;
+
 		fstream destFile;
 		destFile.open(destFilename.c_str(), ios::binary | ios::out | ios::trunc);
-		destFile.write((char*)(&summaryBlockCount), 2); // zapis iloœci bloków
-		destFile.write((char*)(&alphabetSize), 2); // zapis rozmiar alfabetu
-		destFile.write(alphabet, alphabetSize); // zapis alfabetu
-		/*destFile.write(params.compressedData, destSize);*/
+		destFile.write((char*)(&summaryBlockCount), 2); 
+		destFile.write((char*)(&alphabetSize), 2); 
+		destFile.write(alphabet, alphabetSize);
+
 		// zapis danych z poszczególnych w¹tków
 		for (int i = 0; i < threadCount; i++) {
 			// wyliczenie rozmiaru danych do zapisu
@@ -387,11 +342,10 @@ int main(int argc, char* argv[]) {
 
 		
 		fstream srcFile;
-		srcFile.open(srcFilename.c_str(), ios::binary | ios::in); // otwarcie pliku Ÿród³owego
+		srcFile.open(srcFilename.c_str(), ios::binary | ios::in); 
 
-		if(!srcFile.is_open()) { // sprawdzenie czy plik Ÿród³owy istnieje
+		if(!srcFile.is_open()) { 
 			cout << "Nie mozna otworzyc pliku zrodlowego lub plik nie istnieje!";
-			system("pause");
 			return 0;
 		}
 
@@ -407,37 +361,24 @@ int main(int argc, char* argv[]) {
 		srcFile.close();
 
 		// przygotowanie alfabetu
-		char* alphabet = new char[256]; // zarezerwowanie pamiêci dla alfabetu - max 256B
-		int alphabetSize = ((short*)(buffer + 2))[0]; // wczytujemy iloœæ znaków w alfabecie
-		memcpy(alphabet, &(buffer[4]), alphabetSize); // kopiujemy alfabet (od 3. bajtu licz¹c od zera)
+		char* alphabet = new char[256]; 
+		int alphabetSize = ((short*)(buffer + 2))[0]; 
+		memcpy(alphabet, &(buffer[4]), alphabetSize);
 
 		// przygotowanie parametrów i pamiêci dla procesu dekompresji
 		DecompressParams params;
-		params.compressedData = (buffer + 2 + 2 + alphabetSize); // wskaŸnik na dane do dekompresji (na pierwszy blok) (2 bajty iloœci bloków, 2 bajt rozmiaru alfabetu, odpowiednia iloœæ bajtów alfabetu)
-		params.decompressedData = new char[102400000]; // wstêpnie oszacowana pamiêæ na zdekompresowane dane
+		params.compressedData = (buffer + 2 + 2 + alphabetSize); 
+		// ograniczenie plików zdekompresowanych do 20MB
+		params.decompressedData = new char[20480000]; 
 		params.alphabet = alphabet;
 		params.alphabetSize = alphabetSize;
-		params.blockCount = ((short*)(buffer))[0]; // iloœæ bloków danych
-
-		// realizacja w pojedynczym watku
-		/*HANDLE h;
-		DWORD threadID;
-		unsigned int start = clock();
-		h = CreateThread(NULL, 0, DecompressThread, &params, 0, &threadID);
-		WaitForSingleObject(h, INFINITE);
-		unsigned int stop = clock();
-		double time = static_cast<double>(stop - start) / CLOCKS_PER_SEC;
-
-		cout << "Zakonczono watki" << endl;*/
+		params.blockCount = ((short*)(buffer))[0]; 
 
 		DecompressThread(&params);
 
 		cout << "Czas dzialania: " << time << " sekund" << endl;
 		cout << "Rozmiar danych zdekompresowanych: " << params.decompressedDataSize << endl;
 
-		// zapis do pliku:
-
-		// otwarcie i w³aœciwy zapis do pliku
 		fstream destFile;
 		destFile.open(destFilename.c_str(), ios::binary | ios::out | ios::trunc);
 		destFile.write(params.decompressedData, params.decompressedDataSize);
@@ -447,8 +388,6 @@ int main(int argc, char* argv[]) {
 		delete params.decompressedData;
 		delete buffer;
 	}
-
-	//system("pause");
 	return 0;
 }
 
@@ -457,8 +396,7 @@ int main(int argc, char* argv[]) {
 0 - w³asny komunikat funkcji
 1 - kompresja
 2 - dekompresja 
-3 - kompresja asm
-4 - dekompresja asm*/
+3 - kompresja asm*/
 int parseCommand(int argc, char* argv[]) {
 	if(argc >=6) return -1; // zbyt wiele argumentów
 
@@ -494,19 +432,15 @@ int parseCommand(int argc, char* argv[]) {
 	if(string(argv[1]) == "/ca")
 		return 3;
 
-	if(string(argv[1]) == "/da")
-		return 4;
-
 	return -1;
 }
 
 void writeHelp() {
-	cout << "Uzycie: JAMain opcja plik_zrodlowy [plik_docelowy]" << endl << endl;
+	cout << "Uzycie: JAMain opcja plik_zrodlowy [plik_docelowy] [liczba watkow]" << endl << endl;
 	cout << "Opcje:" << endl;
 	cout << "/c - kompresja pliku" << endl;
 	cout << "/d - dekompresja pliku" << endl;
 	cout << "/ca - kompresja pliku funkcja asemblera" << endl;
-	cout << "/da - dekompresja pliku funkcja asemblera" << endl;
 	cout << "/? - wyswietlenie tej pomocy" << endl;
 	cout << "/help - wyswietlenie tej pomocy" << endl;
 }
